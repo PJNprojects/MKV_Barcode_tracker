@@ -12,12 +12,14 @@ All 20 labels in `print-files/` were machine-checked: every one decodes back to 
 
 | File | Use |
 |---|---|
-| `batch04_S1HCB0381-S1HCB0400.pdf` | 20 labels, one per page — **print this from the laptop** |
+| `TEST_6-labels_S1HCB0381-S1HCB0386.pdf` | 6 labels — **the first test print** |
+| `batch04_S1HCB0381-S1HCB0400.pdf` | 20 labels, one per page — print after the test passes |
 | `png/*.png` | One image per label (203 dpi, black & white) — for the phone app |
 | `serials_batch04_*.xlsx` / `.csv` | Serial list — for the app's Excel/serial printing feature |
 
-Each PDF page is exactly 50 × 30 mm and holds one label as a 400 × 240-dot, 1-bit image —
-one image pixel = one printer dot, so nothing gets resized or smudged.
+Each PDF page is exactly 50 × 30 mm. Labels are **vector**: real font text and barcode bars snapped to the
+printer's 0.125 mm dot grid. They stay sharp at any zoom and print with every bar a whole number of dots wide.
+Checked by rendering with the same PDF engine Edge uses, at 203 dpi.
 
 **Other batches:** open the website's label tool (`/labels/`), set the range, and click **PDF** next to the batch
 you want in the *Batches* table.
@@ -30,11 +32,9 @@ Use the **USB cable**, not Bluetooth: it's steadier for long jobs and charges th
 
 ### 1. One-time setup
 
-1. **Install the Windows driver.** The listing says *"Compatible with Windows"* and lists USB. I couldn't find a
-   public driver download, so get it from SEZNIK support (the listing advertises free installation help and 24/7
-   support) or from the box/QR code. Once it's installed, **"Josh"** (or a similar name) shows up under
-   *Settings → Bluetooth & devices → Printers & scanners*.
-2. Open **Printing preferences** for that printer and set:
+1. **Driver:** the printer appears in Windows as **"LD0801 Label Printer"** (it showed up after installing the WeiDa software). It's listed
+   under *Settings → Bluetooth & devices → Printers & scanners*.
+2. Open **LD0801 Label Printer → Printing preferences** and set:
    - **Paper size:** custom **50 × 30 mm**. Name it `HerdIQ 50x30`.
    - **Media / paper type:** **Label with gaps** (also called "Gap" or "Die-cut"). Never pick Continuous: the printer
      would ignore the gaps and the labels would drift.
@@ -48,20 +48,25 @@ Use the **USB cable**, not Bluetooth: it's steadier for long jobs and charges th
 
 ### 2. Test print — do this before any batch
 
-1. Install **SumatraPDF** (free, small). It prints images at exact size. Adobe Reader works too.
-2. Open `batch04_S1HCB0381-S1HCB0400.pdf` → Print → choose the Josh printer → **Pages: 1** (a single test label).
-   - **Page scaling: "Actual size" / "Don't scale"**. Never use "Fit" or "Shrink".
-   - Paper: `HerdIQ 50x30`. Margins: none.
-3. Check the label:
+1. Open `TEST_6-labels_S1HCB0381-S1HCB0386.pdf` in **Edge** → Print (Ctrl+P):
+   - **Printer:** LD0801 Label Printer
+   - **Layout:** pick whichever of Portrait/Landscape shows **one label filling the page, the right way up**. It depends on how the paper size was entered in the driver.
+   - **Pages:** `1` for the very first test
+   - **Color:** Black and white
+   - **More settings → Paper size:** `HerdIQ 50x30`. **Scale:** *Actual size* (not "Fit to printable area").
+     **Margins:** None.
+   - **Check the preview:** each page should look like a 5:3 rectangle. If it looks like a long, thin strip, the
+     paper size is still wrong. Fix step 2 of the setup.
+2. Check the label:
    - **Centred?** If not, open the label tool on the website (`/labels/`), adjust **Shift right / Shift down**
      under *Printer calibration*, then download the batches again.
    - **Upside down?** Tick **Rotate 180°** in the same place.
    - **Bars clean and separate?** If they look fat or merged, reduce darkness by 1–2 steps.
-4. **Scan it with the website on your phone.** If it opens S1HCB0381, the whole chain works.
+3. **Scan it with the website on your phone.** If it opens S1HCB0381, the whole chain works.
 
 ### 3. Print the batch
 
-Print pages 2–20 of `batch04`. Then **scan a few labels** (first, middle, last) with the website before sticking them.
+Print pages 2–6 of the test file. Once those scan, print `batch04`. Then **scan a few labels** (first, middle, last) with the website before sticking them.
 
 When printing more batches later, wait **1–2 minutes** between batches of 20: the head heats up on long runs and
 later labels come out faint. If a label jams or comes out bad, reprint just that page.

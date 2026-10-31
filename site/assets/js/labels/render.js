@@ -1,10 +1,17 @@
 /*
- * Label renderer → 1-bit bitmap at the printer's native resolution.
+ * Label renderer.
  *
- * Why 1-bit at native resolution: a 203-dpi thermal head prints dots, not
- * greys. If we hand it a smooth/anti-aliased image, the driver dithers the
- * edges of every bar and the barcode widths become irregular → poor scans.
- * Rendering each bar as an exact whole number of dots avoids that entirely.
+ * One layout engine, two outputs:
+ *   • vector  — PDF drawing commands: bars as exact rectangles on the printer's
+ *               dot grid, text as real (Helvetica-Bold) font glyphs. Razor sharp
+ *               at any zoom; the printer driver rasterises it at its native dpi.
+ *               → used for PDFs (the recommended print path).
+ *   • bitmap  — 1-bit image at the printer's native 203 dpi (one pixel = one dot).
+ *               → used for PNGs (phone app) and the on-screen preview.
+ *
+ * Bars are always a whole number of printer dots wide. A 203-dpi head cannot
+ * print fractions of a dot; uneven bar widths are what make thermal barcodes
+ * fail to scan.
  *
  * 203 dpi = 8 dots per mm exactly, so a 50 × 30 mm label = 400 × 240 dots.
  */
@@ -26,12 +33,45 @@
     offsetXmm: 0,           // printer calibration nudges
     offsetYmm: 0,
     rotate180: false,
-    fontFamily: 'Arial, "Helvetica Neue", Helvetica, "Liberation Sans", sans-serif'
+    // Arial and Helvetica share identical glyph widths, so the bitmap (Arial) and the
+    // PDF (Helvetica-Bold) come out the same size and position.
+    fontFamily: 'Arial, Helvetica, "Liberation Sans", "Helvetica Neue", sans-serif'
   });
 
   var MAX_MODULE_DOTS = 4;
+  var BASELINE = 0.86;      // baseline position within a text block, as a fraction of font size
+
+  // Helvetica-Bold advance widths (1/1000 em) for ASCII 32–126 — standard Adobe AFM metrics.
+  var HELV_BOLD = [
+    278, 333, 474, 556, 556, 889, 722, 238, 333, 333, 389, 584, 278, 333, 278, 278,
+    556, 556, 556, 556, 556, 556, 556, 556, 556, 556, 333, 333, 584, 584, 584, 611,
+    975, 722, 722, 722, 722, 667, 611, 778, 722, 278, 556, 722, 611, 833, 722, 778,
+    667, 778, 722, 667, 611, 722, 667, 944, 667, 667, 611, 333, 278, 333, 584, 556,
+    333, 556, 611, 556, 611, 556, 333, 611, 611, 278, 278, 556, 278, 889, 611, 611,
+    611, 611, 389, 556, 333, 611, 556, 778, 556, 556, 500, 389, 280, 389, 584
+  ];
 
   function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+  function charWidth(ch) {
+    var c = ch.charCodeAt(0);
+    return c >= 32 && c <= 126 ? HELV_BOLD[c - 32] : 556;
+  }
+
+  /** Width of a string in dots for a font size (dots) and extra letter spacing (dots). */
+  function textWidth(str, size, spacing) {
+    var w = 0;
+    for (var i = 0; i < str.length; i++) w += charWidth(str[i]);
+    return (w / 1000) * size + spacing * Math.max(0, str.length - 1);
+  }
+
+  /** Largest font size ≤ size whose text fits maxWidth. */
+  function fitSize(str, size, spacingRatio, maxWidth, minSize) {
+    for (var s = size; s > minSize; s -= 0.5) {
+      if (textWidth(str, s, s * spacingRatio) <= maxWidth) return s;
+    }
+    return minSize;
+  }
 
   function withDefaults(opts) {
     var o = {};
@@ -48,24 +88,8 @@
     return c;
   }
 
-  /** Draws text, shrinking the font until it fits maxWidth. Returns the font size used. */
-  function fitText(ctx, text, weight, size, family, maxWidth, minSize) {
-    var s = size;
-    for (; s > minSize; s--) {
-      ctx.font = weight + ' ' + s + 'px ' + family;
-      if (ctx.measureText(text).width <= maxWidth) return s;
-    }
-    ctx.font = weight + ' ' + minSize + 'px ' + family;
-    return minSize;
-  }
-
-  /**
-   * @param {string} text  data to encode (and print underneath)
-   * @param {object} options  see DEFAULTS
-   * @returns {{ width:number, height:number, data:Uint8Array, info:object }}
-   *          data: one byte per dot, 1 = black
-   */
-  function renderLabel(text, options) {
+  // ── Layout (all units: printer dots, origin top-left) ──────────────────────
+  function layout(text, options) {
     var o = withDefaults(options);
     var dpm = Number(o.dotsPerMm);
     var W = Math.round(Number(o.widthMm) * dpm);
@@ -77,7 +101,7 @@
     var side = Math.round(Number(o.sideMarginMm) * dpm);
     var contentW = W - 2 * side;
 
-    // ── Barcode geometry ────────────────────────────────────────────────────
+    // Barcode geometry
     var symbol = HerdIQ.Code128.encode(text);
     var quiet = HerdIQ.Code128.QUIET_ZONE_MODULES;
     var nMod = symbol.modules.length;
@@ -90,83 +114,109 @@
     if ((nMod + 2 * quiet) * X > W) warnings.push('Quiet zone (blank margin beside the bars) is smaller than the standard 10 bar-widths; scanning may be less reliable.');
     if (X < 2) warnings.push('Bars are only 1 dot (0.125 mm) wide — too fine for reliable phone scanning. Use a shorter serial or a wider label.');
 
-    // ── Vertical layout: [header] · barcode · serial, spare space shared evenly ──
-    var headerSize = o.showHeader && String(o.headerText || '').trim() ? clamp(Math.round(H * 0.2), 14, 64) : 0;
-    var serialSize = clamp(Math.round(H * 0.14), 16, 44);
+    // Vertical layout: [header] · barcode · serial, spare space shared evenly
+    var headerText = o.showHeader ? String(o.headerText || '').trim() : '';
+    var headerBox = headerText ? clamp(Math.round(H * 0.2), 14, 64) : 0;
+    var serialBox = clamp(Math.round(H * 0.14), 16, 44);
     var minGap = Math.max(4, Math.round(H * 0.025));
-    var blocks = headerSize ? 3 : 2;
+    var blocks = headerBox ? 3 : 2;
     var inner = H - 2 * edge;
-    var barMax = inner - headerSize - serialSize - (blocks - 1) * minGap;
+    var barMax = inner - headerBox - serialBox - (blocks - 1) * minGap;
     var barH = o.barcodeHeightMm === 'auto' ? barMax : Math.min(barMax, Math.round(Number(o.barcodeHeightMm) * dpm));
     if (barH < 4 * dpm) throw new Error('Not enough height for the barcode (needs at least 4 mm). Turn off the header or use a taller label.');
     if (barH < 8 * dpm) warnings.push('Barcode is only ' + (barH / dpm).toFixed(1) + ' mm tall; 8 mm or more scans more easily.');
-    var gap = Math.floor((inner - headerSize - barH - serialSize) / (blocks - 1));
+    var gap = Math.floor((inner - headerBox - barH - serialBox) / (blocks - 1));
 
-    var headerTop = edge;
-    var barTop = edge + (headerSize ? headerSize + gap : 0);
+    var barTop = edge + (headerBox ? headerBox + gap : 0);
     var serialTop = barTop + barH + gap;
 
-    // ── Text (canvas), then threshold to pure black/white ───────────────────
+    function textLine(str, box, top, spacingRatio) {
+      var size = fitSize(str, box, spacingRatio, contentW, 8);
+      var spacing = size * spacingRatio;
+      var width = textWidth(str, size, spacing);
+      return {
+        text: str,
+        size: size,
+        spacing: spacing,
+        x: (W - width) / 2,
+        // keep a shrunken line vertically centred in its block
+        baseline: top + box * BASELINE - (box - size) * BASELINE / 2
+      };
+    }
+
+    // Bars as runs of adjacent bar modules → [startDot, widthDots]
+    var x0 = Math.round((W - nMod * X) / 2);
+    var runs = [];
+    for (var m = 0; m < nMod; m++) {
+      if (!symbol.modules[m]) continue;
+      var s = m;
+      while (m + 1 < nMod && symbol.modules[m + 1]) m++;
+      runs.push([x0 + s * X, (m - s + 1) * X]);
+    }
+
+    return {
+      W: W,
+      H: H,
+      dpm: dpm,
+      fontFamily: o.fontFamily,
+      header: headerText ? textLine(headerText, headerBox, edge, 0.03) : null,
+      serial: textLine(text, serialBox, serialTop, 0.06),
+      bars: { runs: runs, top: barTop, height: barH },
+      dx: Math.round(Number(o.offsetXmm) * dpm),
+      dy: Math.round(Number(o.offsetYmm) * dpm),
+      rotate180: !!o.rotate180,
+      info: {
+        text: text,
+        moduleDots: X,
+        moduleMm: X / dpm,
+        barcodeWidthMm: (nMod * X) / dpm,
+        barcodeHeightMm: barH / dpm,
+        dpi: dpm * 25.4,
+        warnings: warnings
+      }
+    };
+  }
+
+  // ── Bitmap output ──────────────────────────────────────────────────────────
+  function drawTextChars(ctx, line) {
+    ctx.font = '700 ' + line.size + 'px ' + ctx.__family;
+    var x = line.x;
+    for (var i = 0; i < line.text.length; i++) {
+      var ch = line.text[i];
+      ctx.fillText(ch, x, line.baseline);
+      x += (charWidth(ch) / 1000) * line.size + line.spacing;
+    }
+  }
+
+  function toBitmap(L) {
+    var W = L.W, H = L.H;
     var canvas = makeCanvas(W, H);
     var ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
     ctx.fillStyle = '#000';
     ctx.textBaseline = 'alphabetic';
-    ctx.textAlign = 'center';
-
-    // Baseline at ~0.86 of the font size puts capital letters inside their block.
-    if (headerSize) {
-      var headerText = String(o.headerText).trim();
-      try { ctx.letterSpacing = Math.round(headerSize * 0.03) + 'px'; } catch (e) { /* older browsers */ }
-      var usedHeader = fitText(ctx, headerText, '700', headerSize, o.fontFamily, contentW, 12);
-      ctx.fillText(headerText, W / 2, headerTop + Math.round(headerSize * 0.86) - Math.round((headerSize - usedHeader) / 2));
-    }
-
-    try { ctx.letterSpacing = Math.round(serialSize * 0.06) + 'px'; } catch (e) { /* older browsers */ }
-    var usedSerial = fitText(ctx, text, '700', serialSize, o.fontFamily, contentW, 12);
-    ctx.fillText(text, W / 2, serialTop + Math.round(serialSize * 0.86) - Math.round((serialSize - usedSerial) / 2));
-    try { ctx.letterSpacing = '0px'; } catch (e) { /* ignore */ }
+    ctx.textAlign = 'left';
+    ctx.__family = L.fontFamily;
+    if (L.header) drawTextChars(ctx, L.header);
+    drawTextChars(ctx, L.serial);
 
     var img = ctx.getImageData(0, 0, W, H).data;
     var data = new Uint8Array(W * H);
     for (var p = 0, q = 0; p < data.length; p++, q += 4) {
-      // Luma threshold at 50 %.
-      data[p] = img[q] * 0.299 + img[q + 1] * 0.587 + img[q + 2] * 0.114 < 128 ? 1 : 0;
+      data[p] = img[q] * 0.299 + img[q + 1] * 0.587 + img[q + 2] * 0.114 < 128 ? 1 : 0; // 50 % threshold
     }
 
-    // ── Bars, drawn as exact whole dots ─────────────────────────────────────
-    var barW = nMod * X;
-    var x0 = Math.round((W - barW) / 2);
-    for (var y = barTop; y < barTop + barH; y++) {
+    for (var y = L.bars.top; y < L.bars.top + L.bars.height; y++) {
       var row = y * W;
       for (var x = 0; x < W; x++) data[row + x] = 0; // keep the barcode band clean
-      for (var m = 0; m < nMod; m++) {
-        if (!symbol.modules[m]) continue;
-        var start = row + x0 + m * X;
-        for (var d = 0; d < X; d++) data[start + d] = 1;
-      }
+      L.bars.runs.forEach(function (r) {
+        for (var d = 0; d < r[1]; d++) data[row + r[0] + d] = 1;
+      });
     }
 
-    // ── Calibration: offset and rotation ────────────────────────────────────
-    var dx = Math.round(Number(o.offsetXmm) * dpm);
-    var dy = Math.round(Number(o.offsetYmm) * dpm);
-    if (dx || dy || o.rotate180) data = transform(data, W, H, dx, dy, !!o.rotate180);
-
-    return {
-      width: W,
-      height: H,
-      data: data,
-      info: {
-        text: text,
-        moduleDots: X,
-        moduleMm: X / dpm,
-        barcodeWidthMm: barW / dpm,
-        barcodeHeightMm: barH / dpm,
-        dpi: dpm * 25.4,
-        warnings: warnings
-      }
-    };
+    if (L.dx || L.dy || L.rotate180) data = transform(data, W, H, L.dx, L.dy, L.rotate180);
+    return { width: W, height: H, data: data, info: L.info };
   }
 
   function transform(src, W, H, dx, dy, rot) {
@@ -181,6 +231,53 @@
       }
     }
     return out;
+  }
+
+  // ── Vector (PDF content stream) output ─────────────────────────────────────
+  function n(v) { return (Math.round(v * 10000) / 10000).toString(); }
+
+  function pdfText(str) {
+    return '(' + str.replace(/[^\x20-\x7e]/g, '?').replace(/([\\()])/g, '\\$1') + ')';
+  }
+
+  /**
+   * PDF page content in points. Requires font resource /F1 = Helvetica-Bold.
+   * Bars land exactly on the 203-dpi dot grid (1 dot = 0.125 mm).
+   */
+  function toVector(L) {
+    var k = 72 / 25.4 / L.dpm; // points per dot
+    var Wpt = L.W * k, Hpt = L.H * k;
+    var out = ['q'];
+    if (L.rotate180) out.push('-1 0 0 -1 ' + n(Wpt) + ' ' + n(Hpt) + ' cm');
+    if (L.dx || L.dy) out.push('1 0 0 1 ' + n(L.dx * k) + ' ' + n(-L.dy * k) + ' cm');
+    out.push('0 g');
+
+    var yBottom = (L.H - L.bars.top - L.bars.height) * k;
+    var hPt = L.bars.height * k;
+    L.bars.runs.forEach(function (r) {
+      out.push(n(r[0] * k) + ' ' + n(yBottom) + ' ' + n(r[1] * k) + ' ' + n(hPt) + ' re');
+    });
+    out.push('f');
+
+    [L.header, L.serial].forEach(function (t) {
+      if (!t) return;
+      out.push('BT /F1 ' + n(t.size * k) + ' Tf ' + n(t.spacing * k) + ' Tc 1 0 0 1 ' +
+        n(t.x * k) + ' ' + n((L.H - t.baseline) * k) + ' Tm ' + pdfText(t.text) + ' Tj ET');
+    });
+    out.push('Q');
+    return out.join('\n');
+  }
+
+  // ── Public API ─────────────────────────────────────────────────────────────
+  /** 1-bit bitmap: { width, height, data (1 byte per dot, 1 = black), info } */
+  function render(text, options) {
+    return toBitmap(layout(text, options));
+  }
+
+  /** Vector page: { widthMm, heightMm, content (PDF operators), info } */
+  function renderVector(text, options) {
+    var L = layout(text, options);
+    return { widthMm: L.W / L.dpm, heightMm: L.H / L.dpm, content: toVector(L), info: L.info };
   }
 
   /** Paints a bitmap onto a canvas (scale ≥ 1, nearest-neighbour). */
@@ -206,5 +303,10 @@
     return c;
   }
 
-  HerdIQ.LabelRenderer = Object.freeze({ DEFAULTS: DEFAULTS, render: renderLabel, toCanvas: toCanvas });
+  HerdIQ.LabelRenderer = Object.freeze({
+    DEFAULTS: DEFAULTS,
+    render: render,
+    renderVector: renderVector,
+    toCanvas: toCanvas
+  });
 })(window);

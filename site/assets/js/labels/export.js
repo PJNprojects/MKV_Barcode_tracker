@@ -1,7 +1,8 @@
 /*
  * File exporters for the label tool — no third-party libraries.
- *   PDF  : one label per page, page size = label size, 1-bit image at native dpi,
- *          /PrintScaling /None so PDF viewers default to "Actual size".
+ *   PDF  : one label per page, page size = label size. Vector (sharp text + bars
+ *          snapped to the 203-dpi dot grid) or 1-bit bitmap. /PrintScaling /None
+ *          so PDF viewers default to "Actual size".
  *   PNG  : 1-bit black/white, with a pHYs chunk declaring 203.2 dpi.
  *   ZIP  : "stored" (uncompressed) archive — PDFs/PNGs are already compressed.
  */
@@ -69,51 +70,62 @@
 
   // ── PDF ───────────────────────────────────────────────────────────────────
   /**
-   * @param {Array<{width,height,data}>} bitmaps
+   * One label per page. Each page is either
+   *   • a vector page  { content: '<PDF operators>' }  (uses font /F1 = Helvetica-Bold), or
+   *   • a bitmap       { width, height, data }          (1-bit image filling the page).
+   * @param {Array<object>} pages
    * @param {{widthMm:number, heightMm:number, title?:string}} page
    * @returns {Promise<Blob>}
    */
-  async function buildPdf(bitmaps, page) {
-    if (!bitmaps.length) throw new Error('Nothing to export.');
+  async function buildPdf(pages, page) {
+    if (!pages.length) throw new Error('Nothing to export.');
     var wPt = (page.widthMm * 72) / 25.4;
     var hPt = (page.heightMm * 72) / 25.4;
     var fmt = function (n) { return n.toFixed(4).replace(/\.?0+$/, ''); };
+    var mediaBox = '[0 0 ' + fmt(wPt) + ' ' + fmt(hPt) + ']';
 
-    // Object numbers: 1 catalog, 2 pages, 3 info, then (page, contents, image) per label.
+    // 1 catalog · 2 page tree · 3 info · 4 font · then 3 objects per page (page, contents, image)
     var objs = [];
+    var nPages = pages.length;
     var kids = [];
-    var nPages = bitmaps.length;
-    for (var i = 0; i < nPages; i++) kids.push(4 + i * 3 + ' 0 R');
+    for (var i = 0; i < nPages; i++) kids.push(5 + i * 3 + ' 0 R');
 
     objs[1] = enc.encode('<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /PrintScaling /None >> >>');
     objs[2] = enc.encode('<< /Type /Pages /Count ' + nPages + ' /Kids [' + kids.join(' ') + '] >>');
     objs[3] = enc.encode('<< /Title ' + pdfString(page.title || 'Labels') + ' /Producer (HerdIQ label tool) /CreationDate ' + pdfString(pdfDate(new Date())) + ' >>');
-
-    var contentStream = enc.encode('q ' + fmt(wPt) + ' 0 0 ' + fmt(hPt) + ' 0 0 cm /Im0 Do Q');
+    objs[4] = enc.encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
 
     for (i = 0; i < nPages; i++) {
-      var b = bitmaps[i];
-      var pageNo = 4 + i * 3, contentNo = pageNo + 1, imageNo = pageNo + 2;
-      objs[pageNo] = enc.encode(
-        '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + fmt(wPt) + ' ' + fmt(hPt) + ']' +
-        ' /Resources << /XObject << /Im0 ' + imageNo + ' 0 R >> >> /Contents ' + contentNo + ' 0 R >>'
-      );
+      var pg = pages[i];
+      var pageNo = 5 + i * 3, contentNo = pageNo + 1, imageNo = pageNo + 2;
+      var isVector = typeof pg.content === 'string';
+      var resources = isVector
+        ? '<< /Font << /F1 4 0 R >> /ProcSet [/PDF /Text] >>'
+        : '<< /XObject << /Im0 ' + imageNo + ' 0 R >> >>';
+      objs[pageNo] = enc.encode('<< /Type /Page /Parent 2 0 R /MediaBox ' + mediaBox + ' /Resources ' + resources + ' /Contents ' + contentNo + ' 0 R >>');
+
+      var stream = enc.encode(isVector ? pg.content : 'q ' + fmt(wPt) + ' 0 0 ' + fmt(hPt) + ' 0 0 cm /Im0 Do Q');
+      var packedStream = await deflate(stream);
       objs[contentNo] = concat([
-        enc.encode('<< /Length ' + contentStream.length + ' >>\nstream\n'),
-        contentStream,
+        enc.encode('<< /Length ' + (packedStream || stream).length + (packedStream ? ' /Filter /FlateDecode' : '') + ' >>\nstream\n'),
+        packedStream || stream,
         enc.encode('\nendstream')
       ]);
-      var raw = packBits(b);
-      var packed = await deflate(raw);
-      var filter = packed ? ' /Filter /FlateDecode' : '';
-      var body = packed || raw;
-      objs[imageNo] = concat([
-        enc.encode('<< /Type /XObject /Subtype /Image /Width ' + b.width + ' /Height ' + b.height +
-          ' /ColorSpace /DeviceGray /BitsPerComponent 1 /Interpolate false' + filter +
-          ' /Length ' + body.length + ' >>\nstream\n'),
-        body,
-        enc.encode('\nendstream')
-      ]);
+
+      if (isVector) {
+        objs[imageNo] = enc.encode('null'); // keeps object numbering uniform
+      } else {
+        var raw = packBits(pg);
+        var packed = await deflate(raw);
+        var body = packed || raw;
+        objs[imageNo] = concat([
+          enc.encode('<< /Type /XObject /Subtype /Image /Width ' + pg.width + ' /Height ' + pg.height +
+            ' /ColorSpace /DeviceGray /BitsPerComponent 1 /Interpolate false' + (packed ? ' /Filter /FlateDecode' : '') +
+            ' /Length ' + body.length + ' >>\nstream\n'),
+          body,
+          enc.encode('\nendstream')
+        ]);
+      }
     }
 
     var parts = [enc.encode('%PDF-1.4\n'), new Uint8Array([0x25, 0xe2, 0xe3, 0xcf, 0xd3, 0x0a])];

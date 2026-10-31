@@ -239,7 +239,9 @@
 
   function pdfForBatch(b) {
     var r = state.settings.render;
-    return Export.buildPdf(state.bitmaps.slice(b.start, b.start + b.items.length), {
+    // Vector pages: crisp text, bars snapped to the printer's dot grid.
+    var pages = b.items.map(function (serial) { return Renderer.renderVector(serial, r); });
+    return Export.buildPdf(pages, {
       widthMm: r.widthMm,
       heightMm: r.heightMm,
       title: 'HerdIQ labels ' + rangeName(b.items)
