@@ -24,11 +24,14 @@ The tool remembers the last template, range and alignment on that phone.
 
 Tap **Customize** next to the template. You can change:
 
-- **Title:** text, font (Sans / Serif / Monospace), bold, size, letter spacing, position, fine move.
+- **Title:** text, font, bold, size, letter spacing, position, fine move.
+- **Fonts (title and serial number):** Arial/Helvetica, Times, Courier and 23 popular fonts (Roboto, Montserrat,
+  Poppins, Bebas Neue, Oswald, Playfair Display, Pacifico and more). You can also add your own font file
+  (e.g. Better Me) with **+ Add your own font**. The serial number can use **Same as title**.
 - **Logo:** upload a PNG/JPG/SVG, set its height and side of the title, and set the black/white cut-off.
 - **Barcode / QR:** barcode only, QR only, both side by side, or nothing. Set barcode height, bar thickness,
   QR size, QR content (serial number, or a link to the device page) and the gap between them.
-- **Serial number text:** font, size, spacing, position.
+- **Serial number text:** font (any of the above), bold, size, spacing, position.
 - **Margins.**
 
 The preview updates as you change things. Built-in templates never change. Use **Save as new template**

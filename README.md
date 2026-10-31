@@ -20,6 +20,7 @@ HerdIQ-CattleBand/
     ├── labels/index.html   Label printing tool (templates, preview, PDF download)
     ├── data/devices.json   The registry (edit this to change animal details)
     ├── data/label-templates.json  Shared label templates (appear on every device)
+    ├── data/label-fonts.json      Shared label fonts (e.g. a purchased font) for every device
     ├── manifest.webmanifest  "Add to Home screen" → opens straight into the scanner
     ├── _headers            Netlify security/caching headers
     └── assets/
@@ -31,8 +32,9 @@ HerdIQ-CattleBand/
         ├── js/labels/      Label tool: templates.js (template model + built-ins), layout.js (one layout →
         │                   preview / 203-dpi bitmap / vector PDF), code128.js, fonts.js (PDF font metrics),
         │                   export.js (PDF/PNG/ZIP writers), app.js (UI)
-        └── vendor/         ZXing 0.21.3 (Apache-2.0, scanning) and qrcode-generator 1.4.4 (MIT, QR printing),
-                            served locally — no CDN dependency
+        ├── fonts/          23 bundled open-licence label fonts (WOFF, latin) + licences; shared/ for your own
+        └── vendor/         ZXing 0.21.3 (Apache-2.0, scanning), qrcode-generator 1.4.4 (MIT, QR printing),
+                            opentype.js 1.3.4 (MIT, fonts → vector outlines) — all served locally, no CDN
 ```
 
 ## Serial format
@@ -68,6 +70,35 @@ show up immediately.
 - Remove `"environment": "test"` (or set it to `"production"`) to hide the *Test data* banner
 - For a new batch of bands, use the label tool. *More downloads → Website entries* exports matching entries
   you can append.
+
+## Label fonts
+
+The font menus (title **and** serial number) offer:
+
+- **Standard:** Arial/Helvetica, Times, Courier. These are built into every PDF app. Template 1 uses them.
+- **23 popular open-licence fonts** bundled with the site:
+  - Sans: Roboto, Open Sans, Montserrat, Poppins, Lato, Inter, Raleway, Nunito, Ubuntu
+  - Display: Bebas Neue, Anton, Oswald, Archivo Black, Orbitron
+  - Serif: Playfair Display, Merriweather, Roboto Slab
+  - Monospace: Roboto Mono, Source Code Pro
+  - Script: Pacifico, Dancing Script, Lobster, Great Vibes
+- **Your own fonts.** Customize → Font → *+ Add your own font* (.ttf/.otf/.woff). The font is kept on that
+  device, and *Export template* includes it so another phone gets it on import.
+
+Non-standard fonts are converted to vector outlines in the PDF, so the printer app never needs the font
+installed. A font file is only downloaded when it is picked. Fonts without a bold file get a simulated bold.
+If a font has no drawing for a character (some script fonts lack digits), the tool warns.
+
+### Adding a font for everyone (e.g. "Better Me")
+
+1. Make sure the font's licence allows **web embedding and commercial use**. Many free "personal use"
+   fonts don't.
+2. Copy the file (.ttf, .otf or .woff, **not** .woff2) to `site/assets/fonts/shared/`, e.g. `BetterMe.ttf`.
+3. Add it to `site/data/label-fonts.json`:
+   ```json
+   { "fonts": [ { "id": "better-me", "name": "Better Me", "regular": "assets/fonts/shared/BetterMe.ttf", "bold": null } ] }
+   ```
+4. Commit and push. It then appears under **Shared (website)** in every font menu.
 
 ## Moving to the official website later
 

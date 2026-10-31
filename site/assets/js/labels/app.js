@@ -12,6 +12,7 @@
   var MAX_LABELS = 500;
   var MAX_THUMBS = 60;
   var LOGO_MAX_PX = 600;
+  var FONT_ACCEPT = '.ttf,.otf,.woff,font/ttf,font/otf,font/woff,application/font-woff,application/x-font-ttf,application/x-font-otf';
 
   var $ = function (id) { return document.getElementById(id); };
   var els = {
@@ -97,6 +98,7 @@
     refreshEditorChrome();
     fillFields();
     syncLogo();
+    syncFonts();
     if (!opts || !opts.silent) scheduleRender();
   }
 
@@ -104,7 +106,10 @@
     var c = t.code.type;
     var code = c === 'barcode' ? 'barcode' : c === 'qr' ? 'QR code' : c === 'both' ? 'barcode + QR code' : 'no code';
     var parts = [];
-    if (t.title.show && t.title.text) parts.push('"' + t.title.text + '" title');
+    if (t.title.show && t.title.text) {
+      var fd = Fonts.describe(t.title.font);
+      parts.push('"' + t.title.text + '" title' + (fd && t.title.font !== 'sans' ? ' in ' + fd.label : ''));
+    }
     if (t.logo.show && t.logo.image) parts.push('logo');
     parts.push(code);
     if (t.serial.show) parts.push('serial number');
@@ -130,14 +135,13 @@
   }
 
   // ── Editor fields (declarative) ───────────────────────────────────────────
-  var FONT_OPTIONS = Object.keys(Fonts.FAMILIES).map(function (k) { return [k, Fonts.FAMILIES[k].label]; });
   var ALIGN = [['left', 'Left'], ['center', 'Centre'], ['right', 'Right']];
 
   var SPEC = [
     { legend: 'Title', fields: [
       { path: 'title.show', type: 'toggle', label: 'Show title' },
       { path: 'title.text', type: 'text', label: 'Text', when: 'title.show' },
-      { path: 'title.font', type: 'select', label: 'Font', options: FONT_OPTIONS, when: 'title.show' },
+      { path: 'title.font', type: 'font', label: 'Font', when: 'title.show' },
       { path: 'title.bold', type: 'toggle', label: 'Bold', when: 'title.show' },
       { path: 'title.sizeMm', type: 'range', label: 'Text size', step: 0.25, unit: 'mm', when: 'title.show' },
       { path: 'title.spacing', type: 'range', label: 'Letter spacing', step: 1, unit: '%', when: 'title.show' },
@@ -171,13 +175,16 @@
     ] },
     { legend: 'Serial number text', fields: [
       { path: 'serial.show', type: 'toggle', label: 'Show serial number' },
-      { path: 'serial.font', type: 'select', label: 'Font', options: FONT_OPTIONS, when: 'serial.show' },
+      { path: 'serial.font', type: 'font', label: 'Font', sameAsTitle: true, when: 'serial.show' },
       { path: 'serial.bold', type: 'toggle', label: 'Bold', when: 'serial.show' },
       { path: 'serial.sizeMm', type: 'range', label: 'Text size', step: 0.25, unit: 'mm', when: 'serial.show' },
       { path: 'serial.spacing', type: 'range', label: 'Letter spacing', step: 1, unit: '%', when: 'serial.show' },
       { path: 'serial.align', type: 'select', label: 'Position', options: ALIGN, when: 'serial.show' },
       { path: 'serial.dxMm', type: 'range', label: 'Move left ↔ right', step: 0.25, unit: 'mm', min: -15, max: 15, when: 'serial.show' },
       { path: 'serial.dyMm', type: 'range', label: 'Move up ↕ down', step: 0.25, unit: 'mm', min: -8, max: 8, when: 'serial.show' }
+    ] },
+    { legend: 'My fonts', fields: [
+      { path: '_fonts', type: 'fontlist', label: 'Fonts added on this device' }
     ] },
     { legend: 'Margins', fields: [
       { path: 'layout.edgeMm', type: 'range', label: 'Top & bottom margin', step: 0.25, unit: 'mm' },
@@ -229,6 +236,29 @@
         input.type = 'text';
         input.className = 'input';
         input.maxLength = rule.max || 40;
+      } else if (f.type === 'font') {
+        input = document.createElement('select');
+        input.className = 'input';
+        input.dataset.sameAsTitle = f.sameAsTitle ? '1' : '';
+        fillFontOptions(input);
+        wrap.appendChild(input);
+        var add = document.createElement('button');
+        add.type = 'button';
+        add.className = 'btn btn--small btn--ghost ed-addfont';
+        add.textContent = '+ Add your own font (.ttf / .otf / .woff)';
+        add.addEventListener('click', function () { pickFont(f.path); });
+        wrap.appendChild(add);
+        input.id = id;
+        fieldEls[f.path] = { input: input, out: null, wrap: wrap, spec: f };
+        input.addEventListener('change', function () { onFieldInput(f); });
+        return wrap;
+      } else if (f.type === 'fontlist') {
+        var list = document.createElement('div');
+        list.className = 'ed-fontlist';
+        wrap.appendChild(list);
+        wrap.appendChild(helpText('Fonts you add are kept on this device. To give everyone a font, add it to the website (see README → “Adding a font for everyone”). Only use fonts you have the licence for.'));
+        fieldEls[f.path] = { input: null, wrap: wrap, spec: f, list: list };
+        return wrap;
       } else if (f.type === 'select') {
         input = document.createElement('select');
         input.className = 'input';
@@ -282,6 +312,125 @@
     return wrap;
   }
 
+  // ── Fonts ─────────────────────────────────────────────────────────────────
+  function fillFontOptions(select) {
+    var current = select.value;
+    select.replaceChildren();
+    if (select.dataset.sameAsTitle) {
+      var same = document.createElement('option');
+      same.value = 'same';
+      same.textContent = 'Same as title';
+      select.appendChild(same);
+    }
+    Fonts.groups().forEach(function (g) {
+      var og = document.createElement('optgroup');
+      og.label = g.group;
+      g.fonts.forEach(function (d) {
+        var o = document.createElement('option');
+        o.value = d.key;
+        o.textContent = d.label;
+        og.appendChild(o);
+      });
+      select.appendChild(og);
+    });
+    if (current) select.value = current;
+  }
+
+  /** A template can name a font this device doesn't have (e.g. imported, or uploaded elsewhere). */
+  function addMissingFontOption(select, key) {
+    var o = document.createElement('option');
+    o.value = key;
+    o.textContent = 'Missing font (' + key.replace(/^[gsu]:/, '') + ')';
+    select.insertBefore(o, select.firstChild);
+  }
+
+  function refreshFontSelects() {
+    Object.keys(fieldEls).forEach(function (path) {
+      var fe = fieldEls[path];
+      if (fe.spec.type === 'font') fillFontOptions(fe.input);
+    });
+    fillFields();
+  }
+
+  var fontPicker = document.createElement('input');
+  fontPicker.type = 'file';
+  fontPicker.accept = FONT_ACCEPT;
+  fontPicker.hidden = true;
+  document.body.appendChild(fontPicker);
+  var fontTarget = null;
+
+  function pickFont(path) {
+    fontTarget = path;
+    fontPicker.value = '';
+    fontPicker.click();
+  }
+
+  fontPicker.addEventListener('change', async function () {
+    var file = fontPicker.files && fontPicker.files[0];
+    if (!file) return;
+    setError(els.editorError, '');
+    try {
+      var key = await Fonts.addUpload(file.name, await file.arrayBuffer());
+      refreshFontSelects();
+      if (fontTarget) {
+        T.setPath(state.working, fontTarget, key);
+        onEdited();
+      }
+    } catch (err) {
+      setError(els.editorError, err.message);
+    }
+  });
+
+  function renderFontList(container) {
+    var list = Fonts.uploads();
+    container.replaceChildren();
+    if (!list.length) {
+      var p = document.createElement('p');
+      p.className = 'muted small';
+      p.textContent = 'None yet. Use “+ Add your own font” under Title → Font.';
+      container.appendChild(p);
+      return;
+    }
+    list.forEach(function (f) {
+      var row = document.createElement('div');
+      row.className = 'ed-fontlist__row';
+      var name = document.createElement('span');
+      name.textContent = f.name;
+      var rm = document.createElement('button');
+      rm.type = 'button';
+      rm.className = 'btn btn--small btn--danger';
+      rm.textContent = 'Remove';
+      rm.addEventListener('click', function () {
+        if (!window.confirm('Remove the font “' + f.name + '” from this device? Templates using it will fall back to Arial/Helvetica.')) return;
+        Fonts.removeUpload(f.id);
+        refreshFontSelects();
+        scheduleRender();
+      });
+      row.append(name, rm);
+      container.appendChild(row);
+    });
+  }
+
+  /** Fonts the working template needs right now. */
+  function neededFonts(t) {
+    var out = [];
+    if (t.title.show && t.title.text) out.push([t.title.font, t.title.bold]);
+    if (t.serial.show) out.push([t.serial.font === 'same' ? t.title.font : t.serial.font, t.serial.bold]);
+    return out;
+  }
+
+  function ensureFonts() {
+    return Promise.all(neededFonts(state.working).map(function (f) { return Fonts.ensure(f[0], f[1]); }));
+  }
+
+  function syncFonts() {
+    ensureFonts().then(function (entries) {
+      if (entries.some(Boolean)) scheduleRender();
+    }, function (err) {
+      setError(els.editorError, err.message);
+    });
+  }
+
   function helpText(t) {
     var p = document.createElement('p');
     p.className = 'hint';
@@ -293,8 +442,12 @@
     Object.keys(fieldEls).forEach(function (path) {
       var fe = fieldEls[path];
       var v = T.getPath(state.working, path);
+      if (fe.spec.type === 'fontlist') { renderFontList(fe.list); return; }
       if (fe.spec.type === 'toggle') fe.input.checked = !!v;
-      else if (fe.spec.type === 'image') {
+      else if (fe.spec.type === 'font') {
+        if (!fe.input.querySelector('option[value="' + CSS.escape(v) + '"]')) addMissingFontOption(fe.input, v);
+        fe.input.value = v;
+      } else if (fe.spec.type === 'image') {
         fe.input.value = '';
         fe.thumb.src = v || '';
         show(fe.thumb, !!v);
@@ -326,6 +479,7 @@
     if (!opts || !opts.keepFields) fillFields();
     else syncVisibility();
     syncLogo();
+    syncFonts();
     scheduleRender();
   }
 
@@ -459,7 +613,10 @@
     var t = T.normalize(state.working);
     t.id = state.current.id;
     t.name = state.current.name + (state.dirty ? ' (edited)' : '');
-    Export.download(new Blob([T.exportJson(t)], { type: 'application/json' }), slug(t.name) + '.herdiq-template.json');
+    var used = neededFonts(t).map(function (f) { return f[0]; }).concat([t.title.font, t.serial.font]);
+    var fonts = Fonts.uploads().filter(function (f) { return used.indexOf(f.key) !== -1; })
+      .map(function (f) { return { id: f.id, name: f.name, data: f.data }; });
+    Export.download(new Blob([T.exportJson(t, fonts)], { type: 'application/json' }), slug(t.name) + '.herdiq-template.json');
   });
 
   els.importBtn.addEventListener('click', function () { els.importFile.click(); });
@@ -467,8 +624,20 @@
     var file = els.importFile.files && els.importFile.files[0];
     els.importFile.value = '';
     if (!file) return;
-    file.text().then(function (text) {
+    file.text().then(async function (text) {
       var list = T.parseImport(text);
+      // Fonts packed into the file: add them on this device and point the template at them.
+      var remap = {};
+      var packed = T.parseImportFonts(text);
+      for (var i = 0; i < packed.length; i++) {
+        var bytes = Uint8Array.from(atob(packed[i].data), function (c) { return c.charCodeAt(0); });
+        remap['u:' + packed[i].id] = await Fonts.addUpload(packed[i].name, bytes.buffer);
+      }
+      if (packed.length) refreshFontSelects();
+      list.forEach(function (t) {
+        if (remap[t.title.font]) t.title.font = remap[t.title.font];
+        if (remap[t.serial.font]) t.serial.font = remap[t.serial.font];
+      });
       var names = allTemplates().map(function (t) { return t.name; });
       list.forEach(function (t) {
         t.id = T.newId();
@@ -718,12 +887,14 @@
   }
 
   async function pdfBlob() {
+    await ensureFonts();
     var cal = state.prefs.calibration;
     var pages = allLabels().map(function (label) { return L.toPdfPage(label, cal); });
     return Export.buildPdf(pages, { widthMm: T.LABEL.widthMm, heightMm: T.LABEL.heightMm, title: 'HerdIQ labels ' + state.range.from + '–' + state.range.to });
   }
 
   async function pngFiles() {
+    await ensureFonts();
     var cal = state.prefs.calibration;
     var files = [];
     var labels = allLabels();
@@ -813,6 +984,7 @@
     renderTemplateOptions();
     selectTemplate(state.prefs.templateId, { silent: true });
     render();
+    if (await Fonts.loadShared()) refreshFontSelects();
     state.shared = await T.loadShared();
     if (state.shared.length) {
       renderTemplateOptions();

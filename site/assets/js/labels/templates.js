@@ -37,7 +37,7 @@
   // Allowed values / ranges (also used to build the editor's limits).
   var RULES = {
     'title.text': { max: 24 },
-    'title.font': { oneOf: ['sans', 'serif', 'mono'] },
+    'title.font': { validate: function (v) { return HerdIQ.LabelFonts.isValidKey(v); } },
     'title.sizeMm': { min: 1.5, max: 12 },
     'title.spacing': { min: 0, max: 40 },
     'title.align': { oneOf: ['left', 'center', 'right'] },
@@ -56,7 +56,7 @@
     'code.gapMm': { min: 0, max: 15 },
     'code.dxMm': { min: -25, max: 25 },
     'code.dyMm': { min: -15, max: 15 },
-    'serial.font': { oneOf: ['sans', 'serif', 'mono'] },
+    'serial.font': { validate: function (v) { return v === 'same' || HerdIQ.LabelFonts.isValidKey(v); } },
     'serial.sizeMm': { min: 1.5, max: 10 },
     'serial.spacing': { min: 0, max: 40 },
     'serial.align': { oneOf: ['left', 'center', 'right'] },
@@ -100,6 +100,8 @@
           if (isFinite(n)) t[group][key] = Math.min(rule.max != null ? rule.max : n, Math.max(rule.min != null ? rule.min : n, n));
         } else if (rule.oneOf) {
           if (rule.oneOf.indexOf(String(v)) !== -1) t[group][key] = String(v);
+        } else if (rule.validate) {
+          if (rule.validate(String(v))) t[group][key] = String(v);
         } else {
           t[group][key] = String(v).slice(0, rule.max || 2000000);
         }
@@ -172,11 +174,26 @@
   }
 
   // ── Import / export ───────────────────────────────────────────────────────
-  function exportJson(template) {
+  /** fonts: uploaded fonts the template uses ([{id, name, data}]) so it works on another device. */
+  function exportJson(template, fonts) {
     var t = clone(template);
     delete t.builtIn;
     delete t.shared;
-    return JSON.stringify({ herdiqLabelTemplate: SCHEMA, template: t }, null, 2) + '\n';
+    var doc = { herdiqLabelTemplate: SCHEMA, template: t };
+    if (fonts && fonts.length) doc.fonts = fonts;
+    return JSON.stringify(doc, null, 2) + '\n';
+  }
+
+  /** Fonts bundled inside an exported template file (may be empty). */
+  function parseImportFonts(text) {
+    try {
+      var json = JSON.parse(text);
+      return json && Array.isArray(json.fonts)
+        ? json.fonts.filter(function (f) { return f && typeof f.id === 'string' && typeof f.name === 'string' && typeof f.data === 'string'; })
+        : [];
+    } catch (e) {
+      return [];
+    }
   }
 
   /** Accepts an exported file, a bare template, or { templates: [...] }. */
@@ -236,6 +253,7 @@
     newId: newId,
     exportJson: exportJson,
     parseImport: parseImport,
+    parseImportFonts: parseImportFonts,
     loadPrefs: loadPrefs,
     savePrefs: savePrefs
   });

@@ -1,0 +1,4 @@
+{
+  "_readme": "Fonts listed here appear for everyone under 'Shared (website)' in the label tool's font menus. Put the font file (.ttf, .otf or .woff — not .woff2) in site/assets/fonts/shared/ and add an entry: { \"id\": \"better-me\", \"name\": \"Better Me\", \"regular\": \"assets/fonts/shared/BetterMe-Regular.ttf\", \"bold\": null }. 'bold' is optional (a bold file); without it, Bold is simulated. Only add fonts whose licence allows web use and commercial printing.",
+  "fonts": []
+}
