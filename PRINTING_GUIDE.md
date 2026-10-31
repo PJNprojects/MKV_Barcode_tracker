@@ -28,6 +28,8 @@ Tap **Customize** next to the template. You can change:
 - **Fonts (title and serial number):** Arial/Helvetica, Times, Courier and 23 popular fonts (Roboto, Montserrat,
   Poppins, Bebas Neue, Oswald, Playfair Display, Pacifico and more). You can also add your own font file
   (e.g. Better Me) with **+ Add your own font**. The serial number can use **Same as title**.
+- **Subtitle:** a second line under the title (e.g. "Cattle Node") with its own text, font, bold, size, spacing,
+  gap below the title and position. *Template 3 · HerdIQ + subtitle* has it switched on.
 - **Logo:** upload a PNG/JPG/SVG, set its height and side of the title, and set the black/white cut-off.
 - **Barcode / QR:** barcode only, QR only, both side by side, or nothing. Set barcode height, bar thickness,
   QR size, QR content (serial number, or a link to the device page) and the gap between them.

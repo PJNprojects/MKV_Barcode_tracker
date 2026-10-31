@@ -175,6 +175,16 @@
       });
     }
 
+    // ── Subtitle row (second line of text, sits close under the title) ──
+    var subText = tpl.subtitle.show ? String(tpl.subtitle.text || '').trim() : '';
+    if (subText) {
+      var badSub = Fonts.unsupportedChars(subText);
+      if (badSub) throw new LayoutError('Subtitle contains characters the printer fonts cannot show: ' + badSub + '. Use English letters, numbers and basic symbols.');
+      var subFont = tpl.subtitle.font === 'same' ? tpl.title.font : tpl.subtitle.font;
+      var subt = makeText(subText, tpl.subtitle, subFont, contentW, dpm, warnings, 'Subtitle');
+      rows.push({ kind: 'subtitle', h: Math.round(subt.size), text: subt, fixedGapAbove: rows.length ? mm(tpl.subtitle.gapMm, dpm) : null });
+    }
+
     // ── Code row ──
     var type = tpl.code.type;
     if (type !== 'none') {
@@ -263,15 +273,21 @@
     // ── Vertical distribution ──
     var inner = H - 2 * edge;
     var used = rows.reduce(function (s, r) { return s + r.h; }, 0);
-    var free = inner - used;
+    var fixedGaps = rows.reduce(function (s, r, i) { return s + (i > 0 && r.fixedGapAbove != null ? r.fixedGapAbove : 0); }, 0);
+    var flexGaps = rows.filter(function (r, i) { return i > 0 && r.fixedGapAbove == null; }).length;
+    var free = inner - used - fixedGaps;
     if (free < 0) {
       throw new LayoutError('Everything together is ' + ((used / dpm) + 2 * tpl.layout.edgeMm).toFixed(1) +
-        ' mm tall, but the label is only 30 mm. Make the title, barcode/QR or serial number smaller.');
+        ' mm tall, but the label is only 30 mm. Make the title, subtitle, barcode/QR or serial number smaller.');
     }
     if (!rows.length) warnings.push('The label is empty — turn on at least one element.');
-    var between = rows.length > 1 ? free / (rows.length - 1) : 0;
-    var y = edge + (rows.length === 1 ? free / 2 : 0);
-    rows.forEach(function (r) { r.top = Math.round(y); y += r.h + between; });
+    var between = flexGaps > 0 ? free / flexGaps : 0;
+    var y = edge + (flexGaps === 0 ? free / 2 : 0);
+    rows.forEach(function (r, i) {
+      if (i > 0) y += r.fixedGapAbove != null ? r.fixedGapAbove : between;
+      r.top = Math.round(y);
+      y += r.h;
+    });
 
     // ── Emit display list ──
     var items = [];
@@ -326,6 +342,10 @@
             }
           }
         }
+      } else if (r.kind === 'subtitle') {
+        var su = r.text;
+        var sux = alignX(tpl.subtitle.align, su.width, side, W) + mm(tpl.subtitle.dxMm, dpm);
+        items.push(textItem(su, sux, r.top + mm(tpl.subtitle.dyMm, dpm) + su.size * su.baselineRatio));
       } else if (r.kind === 'serial') {
         var st = r.text;
         var sx = alignX(tpl.serial.align, st.width, side, W) + mm(tpl.serial.dxMm, dpm);

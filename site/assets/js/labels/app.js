@@ -110,6 +110,7 @@
       var fd = Fonts.describe(t.title.font);
       parts.push('"' + t.title.text + '" title' + (fd && t.title.font !== 'sans' ? ' in ' + fd.label : ''));
     }
+    if (t.subtitle.show && t.subtitle.text) parts.push('"' + t.subtitle.text + '" subtitle');
     if (t.logo.show && t.logo.image) parts.push('logo');
     parts.push(code);
     if (t.serial.show) parts.push('serial number');
@@ -148,6 +149,18 @@
       { path: 'title.align', type: 'select', label: 'Position', options: ALIGN, when: 'title.show|logo.show' },
       { path: 'title.dxMm', type: 'range', label: 'Move left ↔ right', step: 0.25, unit: 'mm', min: -15, max: 15, when: 'title.show|logo.show' },
       { path: 'title.dyMm', type: 'range', label: 'Move up ↕ down', step: 0.25, unit: 'mm', min: -8, max: 8, when: 'title.show|logo.show' }
+    ] },
+    { legend: 'Subtitle (second line under the title)', fields: [
+      { path: 'subtitle.show', type: 'toggle', label: 'Show subtitle' },
+      { path: 'subtitle.text', type: 'text', label: 'Text', when: 'subtitle.show' },
+      { path: 'subtitle.font', type: 'font', label: 'Font', sameAsTitle: true, when: 'subtitle.show' },
+      { path: 'subtitle.bold', type: 'toggle', label: 'Bold', when: 'subtitle.show' },
+      { path: 'subtitle.sizeMm', type: 'range', label: 'Text size', step: 0.25, unit: 'mm', when: 'subtitle.show' },
+      { path: 'subtitle.spacing', type: 'range', label: 'Letter spacing', step: 1, unit: '%', when: 'subtitle.show' },
+      { path: 'subtitle.gapMm', type: 'range', label: 'Gap below title', step: 0.25, unit: 'mm', when: 'subtitle.show' },
+      { path: 'subtitle.align', type: 'select', label: 'Position', options: ALIGN, when: 'subtitle.show' },
+      { path: 'subtitle.dxMm', type: 'range', label: 'Move left ↔ right', step: 0.25, unit: 'mm', min: -15, max: 15, when: 'subtitle.show' },
+      { path: 'subtitle.dyMm', type: 'range', label: 'Move up ↕ down', step: 0.25, unit: 'mm', min: -8, max: 8, when: 'subtitle.show' }
     ] },
     { legend: 'Logo', fields: [
       { path: 'logo.show', type: 'toggle', label: 'Show logo' },
@@ -199,7 +212,7 @@
     SPEC.forEach(function (group, gi) {
       var fs = document.createElement('details');
       fs.className = 'ed-group';
-      if (gi < 3) fs.open = gi === 0 || gi === 2;
+      fs.open = gi <= 1; // Title + Subtitle open by default
       var sm = document.createElement('summary');
       sm.textContent = group.legend;
       fs.appendChild(sm);
@@ -415,6 +428,7 @@
   function neededFonts(t) {
     var out = [];
     if (t.title.show && t.title.text) out.push([t.title.font, t.title.bold]);
+    if (t.subtitle.show && t.subtitle.text) out.push([t.subtitle.font === 'same' ? t.title.font : t.subtitle.font, t.subtitle.bold]);
     if (t.serial.show) out.push([t.serial.font === 'same' ? t.title.font : t.serial.font, t.serial.bold]);
     return out;
   }
@@ -613,7 +627,7 @@
     var t = T.normalize(state.working);
     t.id = state.current.id;
     t.name = state.current.name + (state.dirty ? ' (edited)' : '');
-    var used = neededFonts(t).map(function (f) { return f[0]; }).concat([t.title.font, t.serial.font]);
+    var used = neededFonts(t).map(function (f) { return f[0]; }).concat([t.title.font, t.subtitle.font, t.serial.font]);
     var fonts = Fonts.uploads().filter(function (f) { return used.indexOf(f.key) !== -1; })
       .map(function (f) { return { id: f.id, name: f.name, data: f.data }; });
     Export.download(new Blob([T.exportJson(t, fonts)], { type: 'application/json' }), slug(t.name) + '.herdiq-template.json');
@@ -637,6 +651,7 @@
       list.forEach(function (t) {
         if (remap[t.title.font]) t.title.font = remap[t.title.font];
         if (remap[t.serial.font]) t.serial.font = remap[t.serial.font];
+        if (remap[t.subtitle.font]) t.subtitle.font = remap[t.subtitle.font];
       });
       var names = allTemplates().map(function (t) { return t.name; });
       list.forEach(function (t) {

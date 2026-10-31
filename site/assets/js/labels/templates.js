@@ -28,6 +28,7 @@
     id: '',
     name: '',
     title: { show: true, text: 'HerdIQ', font: 'sans', bold: true, sizeMm: 6, spacing: 3, align: 'center', dxMm: 0, dyMm: 0 },
+    subtitle: { show: false, text: 'Cattle Node', font: 'sans', bold: false, sizeMm: 3, spacing: 3, align: 'center', gapMm: 0.75, dxMm: 0, dyMm: 0 },
     logo: { show: false, image: '', heightMm: 6, position: 'left', gapMm: 1.5, threshold: 50 },
     code: { type: 'barcode', barcodeHeightMm: 11, barWidth: 'auto', qrContent: 'serial', qrSizeMm: 11, qrPosition: 'left', gapMm: 3, dxMm: 0, dyMm: 0 },
     serial: { show: true, font: 'sans', bold: true, sizeMm: 4.25, spacing: 6, align: 'center', dxMm: 0, dyMm: 0 },
@@ -56,6 +57,14 @@
     'code.gapMm': { min: 0, max: 15 },
     'code.dxMm': { min: -25, max: 25 },
     'code.dyMm': { min: -15, max: 15 },
+    'subtitle.text': { max: 30 },
+    'subtitle.font': { validate: function (v) { return v === 'same' || HerdIQ.LabelFonts.isValidKey(v); } },
+    'subtitle.sizeMm': { min: 1.5, max: 10 },
+    'subtitle.spacing': { min: 0, max: 40 },
+    'subtitle.align': { oneOf: ['left', 'center', 'right'] },
+    'subtitle.gapMm': { min: 0, max: 8 },
+    'subtitle.dxMm': { min: -25, max: 25 },
+    'subtitle.dyMm': { min: -15, max: 15 },
     'serial.font': { validate: function (v) { return v === 'same' || HerdIQ.LabelFonts.isValidKey(v); } },
     'serial.sizeMm': { min: 1.5, max: 10 },
     'serial.spacing': { min: 0, max: 40 },
@@ -86,7 +95,7 @@
     t.id = String(src.id || '');
     t.name = String(src.name || '').slice(0, 60);
 
-    ['title', 'logo', 'code', 'serial', 'layout'].forEach(function (group) {
+    ['title', 'subtitle', 'logo', 'code', 'serial', 'layout'].forEach(function (group) {
       Object.keys(DEFAULTS[group]).forEach(function (key) {
         var path = group + '.' + key;
         var def = DEFAULTS[group][key];
@@ -118,6 +127,14 @@
       name: 'Template 2 · Barcode + QR',
       title: { sizeMm: 5 },
       code: { type: 'both', barcodeHeightMm: 11, qrSizeMm: 11, qrContent: 'serial', qrPosition: 'left', gapMm: 3 },
+      serial: { sizeMm: 4 }
+    }),
+    normalize({
+      id: 't3',
+      name: 'Template 3 · HerdIQ + subtitle',
+      title: { sizeMm: 5.5 },
+      subtitle: { show: true, text: 'Cattle Node', sizeMm: 3, gapMm: 0.75 },
+      code: { barcodeHeightMm: 10 },
       serial: { sizeMm: 4 }
     })
   ].map(function (t) { t.builtIn = true; return Object.freeze(t); });
