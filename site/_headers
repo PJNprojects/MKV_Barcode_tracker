@@ -13,5 +13,19 @@
 /*.html
   Cache-Control: no-cache
 
-/assets/*
-  Cache-Control: public, max-age=3600
+# Code and styles: always re-check with the server, so a new deploy shows up immediately.
+/assets/js/*
+  Cache-Control: no-cache
+
+/assets/css/*
+  Cache-Control: no-cache
+
+# Fonts, libraries and images rarely change.
+/assets/fonts/*
+  Cache-Control: public, max-age=86400
+
+/assets/vendor/*
+  Cache-Control: public, max-age=86400
+
+/assets/img/*
+  Cache-Control: public, max-age=86400
