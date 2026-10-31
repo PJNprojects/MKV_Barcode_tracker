@@ -1,0 +1,4 @@
+{
+  "_readme": "Shared label templates. Templates listed here appear for everyone under 'Shared (website)' in the label printing tool. To share one: in the tool, open the template, click Customize -> Export template, and paste the contents of its \"template\" object into the list below (give it a unique id such as \"s-mytemplate\").",
+  "templates": []
+}

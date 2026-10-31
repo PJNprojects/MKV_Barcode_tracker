@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HerdIQ · Label Printing Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>HerdIQ · Label printing</title>
   <meta name="robots" content="noindex">
   <meta name="theme-color" content="#1f6b4a">
   <link rel="icon" href="../assets/img/icon.svg" type="image/svg+xml">
@@ -11,8 +11,11 @@
   <link rel="stylesheet" href="../assets/css/labels.css">
   <script src="../assets/js/config.js"></script>
   <script src="../assets/js/serial.js" defer></script>
+  <script src="../assets/vendor/qrcode/qrcode-generator-1.4.4.js" defer></script>
+  <script src="../assets/js/labels/fonts.js" defer></script>
   <script src="../assets/js/labels/code128.js" defer></script>
-  <script src="../assets/js/labels/render.js" defer></script>
+  <script src="../assets/js/labels/templates.js" defer></script>
+  <script src="../assets/js/labels/layout.js" defer></script>
   <script src="../assets/js/labels/export.js" defer></script>
   <script src="../assets/js/labels/app.js" defer></script>
 </head>
@@ -21,119 +24,134 @@
     <a class="brand" href="../">
       <img src="../assets/img/icon.svg" alt="" width="32" height="32">
       <span class="brand__name">HerdIQ</span>
-      <span class="brand__sub">Label printing tool</span>
+      <span class="brand__sub">Label printing</span>
     </a>
+    <a class="btn btn--small btn--on-brand" href="../">Back to site</a>
   </header>
 
-  <main class="lt">
-    <form class="lt__settings card" id="settings" novalidate>
-      <fieldset>
-        <legend>Serial range</legend>
-        <div class="grid grid--2">
-          <label class="f">Prefix<input class="input input--mono" name="prefix" value="S1HCB" maxlength="20" required></label>
-          <label class="f">Digits<input class="input" name="digits" type="number" min="1" max="8" value="4" required></label>
-          <label class="f">First number<input class="input" name="start" type="number" min="0" value="321" required></label>
-          <label class="f">Last number<input class="input" name="end" type="number" min="0" value="421" required></label>
+  <main class="lp" id="lp">
+    <div class="lp__main">
+      <!-- 1 · Template + serial range -->
+      <section class="card lp__setup" aria-label="Label settings">
+        <div class="step">
+          <label class="step__label" for="tpl-select"><span class="step__num">1</span>Template</label>
+          <div class="row">
+            <select class="input row__grow" id="tpl-select"></select>
+            <button type="button" class="btn btn--secondary" id="customize-btn" aria-expanded="false" aria-controls="editor">Customize</button>
+          </div>
+          <p class="hint" id="tpl-hint"></p>
         </div>
-        <p class="hint" id="range-summary"></p>
-      </fieldset>
 
-      <fieldset>
-        <legend>Label roll</legend>
-        <div class="grid grid--2">
-          <label class="f">Width (mm)<input class="input" name="widthMm" type="number" min="15" max="60" step="0.5" value="50" required></label>
-          <label class="f">Height (mm)<input class="input" name="heightMm" type="number" min="10" max="100" step="0.5" value="30" required></label>
+        <div class="step">
+          <span class="step__label"><span class="step__num">2</span>Serial numbers</span>
+          <div class="range">
+            <label class="f">From
+              <input class="input input--mono" id="from" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="S1HCB0381">
+            </label>
+            <span class="range__arrow" aria-hidden="true">→</span>
+            <label class="f">To
+              <input class="input input--mono" id="to" type="text" inputmode="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="S1HCB0400">
+            </label>
+          </div>
+          <p class="range__summary" id="range-summary" aria-live="polite"></p>
+          <p class="form-error" id="range-error" role="alert" hidden></p>
         </div>
-        <label class="f">Labels per print batch<input class="input" name="batchSize" type="number" min="1" max="500" value="20" required></label>
-      </fieldset>
+      </section>
 
-      <fieldset>
-        <legend>Layout</legend>
-        <label class="check"><input type="checkbox" name="showHeader" checked> Show title above the barcode</label>
-        <label class="f">Title (printed large, centred)<input class="input" name="headerText" value="HerdIQ" maxlength="20"></label>
-        <div class="grid grid--2">
-          <label class="f">Bar width
-            <select class="input" name="moduleDots">
-              <option value="auto" selected>Auto (widest that fits)</option>
-              <option value="1">1 dot · 0.125 mm</option>
-              <option value="2">2 dots · 0.25 mm</option>
-              <option value="3">3 dots · 0.375 mm</option>
-              <option value="4">4 dots · 0.5 mm</option>
-            </select>
+      <!-- Template editor (hidden until "Customize") -->
+      <section class="card lp__editor" id="editor" aria-labelledby="editor-title" hidden>
+        <div class="ed-head">
+          <h2 class="section-title" id="editor-title">Customize</h2>
+          <span class="pill pill--warn" id="dirty-badge" hidden>Unsaved changes</span>
+        </div>
+        <p class="hint" id="editor-note"></p>
+        <div id="editor-fields"></div>
+
+        <div class="ed-actions">
+          <button type="button" class="btn btn--primary" id="save-btn">Save</button>
+          <button type="button" class="btn btn--secondary" id="save-as-btn">Save as new template</button>
+          <button type="button" class="btn btn--ghost" id="revert-btn">Undo changes</button>
+        </div>
+        <form class="ed-saveas" id="save-as-form" hidden>
+          <label class="f">Name for the new template
+            <input class="input" id="save-as-name" maxlength="60" required>
           </label>
-          <label class="f">Barcode height (mm)<input class="input" name="barcodeHeightMm" type="number" min="4" max="80" step="0.5" value="11" placeholder="Auto (fill)"></label>
+          <div class="ed-actions">
+            <button type="submit" class="btn btn--primary">Save template</button>
+            <button type="button" class="btn btn--ghost" id="save-as-cancel">Cancel</button>
+          </div>
+        </form>
+        <div class="ed-actions ed-actions--minor">
+          <button type="button" class="btn btn--small btn--ghost" id="export-btn">Export template</button>
+          <button type="button" class="btn btn--small btn--ghost" id="import-btn">Import template</button>
+          <button type="button" class="btn btn--small btn--danger" id="delete-btn">Delete template</button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
         </div>
-      </fieldset>
+        <p class="form-error" id="editor-error" role="alert" hidden></p>
+      </section>
 
-      <fieldset>
-        <legend>Printer calibration</legend>
-        <p class="hint">Only change these if the test print is off-centre or upside down.</p>
-        <div class="grid grid--2">
-          <label class="f">Shift right (mm)<input class="input" name="offsetXmm" type="number" min="-10" max="10" step="0.125" value="0"></label>
-          <label class="f">Shift down (mm)<input class="input" name="offsetYmm" type="number" min="-10" max="10" step="0.125" value="0"></label>
+      <!-- Printer alignment (rarely needed) -->
+      <details class="card lp__calib" id="calib">
+        <summary>Printer alignment</summary>
+        <p class="hint">Moves everything on the label to make up for the printer. It applies to every template on this device.</p>
+        <div class="ed-field">
+          <span class="ed-field__label">Shift right <output id="cal-dx-out"></output></span>
+          <input type="range" id="cal-dx" min="-5" max="5" step="0.25">
         </div>
-        <label class="check"><input type="checkbox" name="rotate180"> Rotate 180°</label>
-      </fieldset>
+        <div class="ed-field">
+          <span class="ed-field__label">Shift down <output id="cal-dy-out"></output></span>
+          <input type="range" id="cal-dy" min="-5" max="5" step="0.25">
+        </div>
+        <label class="check"><input type="checkbox" id="cal-rot"> Rotate 180° (label prints upside down)</label>
+        <div class="howto">
+          <p><strong>How to set it:</strong></p>
+          <ol>
+            <li>Download the alignment test and print it.</li>
+            <li>Measure the gap between the printed border and the label edge on the <em>left</em> (L) and on the <em>right</em> (R).</li>
+            <li>Add <strong>(R − L) ÷ 2</strong> to "Shift right". Example: L = 0 mm, R = 3 mm → add 1.5 mm.</li>
+          </ol>
+        </div>
+        <div class="ed-actions">
+          <button type="button" class="btn btn--small btn--secondary" id="cal-test-btn">Download alignment test (PDF)</button>
+          <button type="button" class="btn btn--small btn--ghost" id="cal-reset-btn">Reset to default</button>
+        </div>
+      </details>
+    </div>
 
-      <fieldset>
-        <legend>Registry export (devices.json)</legend>
-        <div class="grid grid--2">
-          <label class="f">Manufactured on<input class="input" name="manufacturedOn" type="date" value="2026-10-17"></label>
-          <label class="f">Batch code<input class="input input--mono" name="batchCode" value="2026-10-A" maxlength="30"></label>
+    <div class="lp__side">
+      <!-- 3 · Preview -->
+      <section class="card lp__preview" aria-labelledby="preview-title">
+        <div class="lp__preview-head">
+          <h2 class="section-title" id="preview-title"><span class="step__num">3</span>Preview</h2>
+          <label class="check check--small"><input type="checkbox" id="dots-toggle"> Show printer dots</label>
         </div>
-        <div class="grid grid--2">
-          <label class="f">Animal name pattern<input class="input" name="animalPattern" value="Buffalo {n}" maxlength="40"></label>
-          <label class="f">Status
-            <select class="input" name="status">
-              <option value="testing" selected>Testing</option>
-              <option value="in-stock">In stock</option>
-              <option value="deployed">Deployed</option>
-            </select>
-          </label>
+        <div class="lp__stage">
+          <canvas id="preview-canvas" aria-label="Preview of the first label"></canvas>
         </div>
-        <label class="check"><input type="checkbox" name="testData" checked> Mark as test data (shows a banner on the website)</label>
-      </fieldset>
+        <p class="muted small" id="preview-meta"></p>
+        <div class="lp__warn" id="warnings" role="status" hidden></div>
+        <p class="form-error" id="layout-error" role="alert" hidden></p>
+        <details class="lp__all" id="all-labels">
+          <summary>See all labels <span id="all-count"></span></summary>
+          <div class="lp__grid" id="thumbs"></div>
+        </details>
+      </section>
 
-      <button type="button" class="btn btn--ghost" id="reset-btn">Reset to defaults</button>
-    </form>
-
-    <section class="lt__output">
-      <div class="card">
-        <div class="lt__head">
-          <h1 class="section-title">Preview</h1>
-          <span class="muted small" id="preview-meta"></span>
-        </div>
-        <div class="lt__preview-wrap">
-          <canvas id="preview" class="lt__preview" aria-label="Preview of the first label"></canvas>
-        </div>
-        <ul class="lt__stats" id="stats"></ul>
-        <div class="lt__warn" id="warnings" role="status" hidden></div>
-        <p class="form-error" id="error" role="alert" hidden></p>
-      </div>
-
-      <div class="card">
-        <h2 class="section-title">Download for printing</h2>
-        <div class="lt__downloads">
-          <button type="button" class="btn btn--primary" data-action="zip-batches">All batches · PDFs (.zip)</button>
-          <button type="button" class="btn btn--secondary" data-action="pdf-all">Everything · one PDF</button>
-          <button type="button" class="btn btn--secondary" data-action="png-all">All labels · PNG images (.zip)</button>
-          <button type="button" class="btn btn--secondary" data-action="csv">Serial list (.csv for the app)</button>
-          <button type="button" class="btn btn--secondary" data-action="registry">Website registry (devices.json)</button>
-        </div>
-        <h3 class="lt__sub">Batches</h3>
-        <div class="table-wrap">
-          <table class="lt__table">
-            <thead><tr><th>#</th><th>Serials</th><th>Labels</th><th class="visually-hidden">Downloads</th></tr></thead>
-            <tbody id="batch-rows"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2 class="section-title">All labels <span class="count" id="all-count"></span></h2>
-        <div class="lt__grid" id="all-labels"></div>
-      </div>
-    </section>
+      <!-- 4 · Download -->
+      <section class="card lp__download" aria-label="Download">
+        <button type="button" class="btn btn--primary btn--xl" id="pdf-btn">Download PDF</button>
+        <p class="hint">Open the PDF in the printer app and print it. Set the label size in the app to <strong>50 × 30 mm</strong>.</p>
+        <details class="lp__more">
+          <summary>More downloads</summary>
+          <div class="lp__more-list">
+            <button type="button" class="btn btn--small btn--secondary" id="png-btn">PNG images (.zip)</button>
+            <button type="button" class="btn btn--small btn--secondary" id="csv-btn">Serial list (.csv)</button>
+            <button type="button" class="btn btn--small btn--secondary" id="registry-btn">Website entries (devices.json)</button>
+          </div>
+          <p class="hint">“Website entries” are new devices to append to <code>site/data/devices.json</code> so the scanner recognises them.</p>
+        </details>
+      </section>
+    </div>
   </main>
 </body>
 </html>

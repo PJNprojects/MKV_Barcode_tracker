@@ -1,91 +1,83 @@
-# Printing the CattleBand labels — SEZNIK Josh
+# Printing CattleBand labels
 
-Test batch: **batch 4 = S1HCB0381 → S1HCB0400 (20 labels)**.
-Full range (S1HCB0321 → S1HCB0421 = 101 labels) can be generated anytime from the label tool at `/labels/`.
-Roll: **50 × 30 mm** direct-thermal labels.
+Everything happens on the website. No laptop, cable or other app is needed except the printer's own phone app.
 
-Label layout (top to bottom): **HerdIQ** (large, centred) · **Code 128 barcode** (30.8 × 11 mm, 0.25 mm bars) · serial number.
+**Labels:** 50 × 30 mm direct-thermal roll, SEZNIK Josh (shows up as "LD0801 Label Printer").
 
-All 20 labels in `print-files/` were machine-checked: every one decodes back to the correct serial.
+## Everyday printing (phone)
 
-## What's in `print-files/`
+1. On the HerdIQ website, tap the small **printer icon** at the top right of the home page. It opens the
+   label tool (`/labels/`).
+2. **Template:** pick one. *Template 1 · HerdIQ standard* is the production design: HerdIQ title, barcode,
+   serial number.
+3. **Serial numbers:** type the first and last serial, e.g. `S1HCB0401` → `S1HCB0420`. The tool shows how many
+   labels that is.
+4. Check the **preview**. Open *See all labels* to check every one.
+5. Tap **Download PDF**.
+6. Open the PDF in the printer's phone app (VPrint), check the label size is **50 × 30 mm**, and print over
+   Bluetooth.
+7. Scan the first printed label with the website's scanner before printing the rest.
 
-| File | Use |
+The tool remembers the last template, range and alignment on that phone.
+
+## Customising a design (templates)
+
+Tap **Customize** next to the template. You can change:
+
+- **Title:** text, font (Sans / Serif / Monospace), bold, size, letter spacing, position, fine move.
+- **Logo:** upload a PNG/JPG/SVG, set its height and side of the title, and set the black/white cut-off.
+- **Barcode / QR:** barcode only, QR only, both side by side, or nothing. Set barcode height, bar thickness,
+  QR size, QR content (serial number, or a link to the device page) and the gap between them.
+- **Serial number text:** font, size, spacing, position.
+- **Margins.**
+
+The preview updates as you change things. Built-in templates never change. Use **Save as new template**
+(e.g. "Template 3"), and it appears under *My templates*.
+
+- Templates you save live **on that phone/browser only**. To move one, use **Export template** and then
+  **Import template** on the other device.
+- To give **everyone** a template, add the exported template to `site/data/label-templates.json` in GitHub.
+  It then appears under *Shared (website)* on every device.
+- If the design doesn't fit on 30 mm, the tool says so instead of producing a broken label.
+
+### Barcode or QR?
+
+- **Barcode (Code 128):** what Template 1 uses. The website's scanner reads it.
+- **QR code:** stays readable when dirty, scratched or seen at an angle, which matters on an animal.
+  - **"Serial number only"** works with the website's scanner and keeps working if the site moves.
+  - **"Link to the device page"** lets *any* phone camera open the page directly. But it ties every printed
+    sticker to the current website address, so only use it once the final domain is fixed.
+
+## Printer alignment
+
+The first test print came out left of centre, so the tool **shifts every PDF 1.5 mm to the right by
+default**. To fine-tune it:
+
+1. Open **Printer alignment** in the tool and tap **Download alignment test (PDF)**. Print it.
+2. Measure the gap between the printed border and the label edge on the **left (L)** and on the **right (R)**.
+3. Add **(R − L) ÷ 2** to *Shift right*. Example: L = 2 mm, R = 5 mm → add 1.5 mm.
+
+The setting is saved on that phone and applies to every template. If the print is also squashed or much
+smaller than the preview, the app's label size is wrong (it must be **50 × 30 mm**, not 40 × 30). Fix that
+before touching the alignment.
+
+## Files in `print-files/`
+
+| File | What |
 |---|---|
-| `TEST_6-labels_S1HCB0381-S1HCB0386.pdf` | 6 labels — **the first test print** |
-| `batch04_S1HCB0381-S1HCB0400.pdf` | 20 labels, one per page — print after the test passes |
-| `png/*.png` | One image per label (203 dpi, black & white) — for the phone app |
-| `serials_batch04_*.xlsx` / `.csv` | Serial list — for the app's Excel/serial printing feature |
+| `TEST_6-labels_S1HCB0381-S1HCB0386.pdf` | 6 labels, Template 1, with the 1.5 mm right shift |
+| `batch04_S1HCB0381-S1HCB0400.pdf` | 20 labels, same settings |
+| `ALIGNMENT_TEST.pdf` | Alignment test (border 4 mm inside the edge), with the 1.5 mm shift |
+| `png/`, `serials_*` | Older image/serial files for batch 4 (made before the alignment shift) |
 
-Each PDF page is exactly 50 × 30 mm. Labels are **vector**: real font text and barcode bars snapped to the
-printer's 0.125 mm dot grid. They stay sharp at any zoom and print with every bar a whole number of dots wide.
-Checked by rendering with the same PDF engine Edge uses, at 203 dpi.
+All PDFs are vector. Text uses real fonts, and every bar is a whole number of printer dots (0.125 mm) wide.
+All labels were machine-checked to decode at 203 dpi.
 
-**Other batches:** open the website's label tool (`/labels/`), set the range, and click **PDF** next to the batch
-you want in the *Batches* table.
+## Printing from a laptop instead (optional)
 
----
-
-## Method A — Laptop over USB (recommended)
-
-Use the **USB cable**, not Bluetooth: it's steadier for long jobs and charges the printer while it works.
-
-### 1. One-time setup
-
-1. **Driver:** the printer appears in Windows as **"LD0801 Label Printer"** (it showed up after installing the WeiDa software). It's listed
-   under *Settings → Bluetooth & devices → Printers & scanners*.
-2. Open **LD0801 Label Printer → Printing preferences** and set:
-   - **Paper size:** custom **50 × 30 mm**. Name it `HerdIQ 50x30`.
-   - **Media / paper type:** **Label with gaps** (also called "Gap" or "Die-cut"). Never pick Continuous: the printer
-     would ignore the gaps and the labels would drift.
-   - **Darkness / density:** start in the **middle** of the range. Full darkness makes the bars bleed into
-     each other, and that's the most common reason thermal barcodes won't scan.
-   - **Speed:** low or medium.
-   - **Orientation:** the 50 mm side goes across the print head.
-3. **Gap calibration:** most printers of this type learn the label gap when they power on with a new roll, or when
-   you double-press the feed button. Check the manual for this model. If labels start printing across the gaps,
-   calibration is the problem.
-
-### 2. Test print — do this before any batch
-
-1. Open `TEST_6-labels_S1HCB0381-S1HCB0386.pdf` in **Edge** → Print (Ctrl+P):
-   - **Printer:** LD0801 Label Printer
-   - **Layout:** pick whichever of Portrait/Landscape shows **one label filling the page, the right way up**. It depends on how the paper size was entered in the driver.
-   - **Pages:** `1` for the very first test
-   - **Color:** Black and white
-   - **More settings → Paper size:** `HerdIQ 50x30`. **Scale:** *Actual size* (not "Fit to printable area").
-     **Margins:** None.
-   - **Check the preview:** each page should look like a 5:3 rectangle. If it looks like a long, thin strip, the
-     paper size is still wrong. Fix step 2 of the setup.
-2. Check the label:
-   - **Centred?** If not, open the label tool on the website (`/labels/`), adjust **Shift right / Shift down**
-     under *Printer calibration*, then download the batches again.
-   - **Upside down?** Tick **Rotate 180°** in the same place.
-   - **Bars clean and separate?** If they look fat or merged, reduce darkness by 1–2 steps.
-3. **Scan it with the website on your phone.** If it opens S1HCB0381, the whole chain works.
-
-### 3. Print the batch
-
-Print pages 2–6 of the test file. Once those scan, print `batch04`. Then **scan a few labels** (first, middle, last) with the website before sticking them.
-
-When printing more batches later, wait **1–2 minutes** between batches of 20: the head heats up on long runs and
-later labels come out faint. If a label jams or comes out bad, reprint just that page.
-
----
-
-## Method B — Phone app (WE PRINT)
-
-The listing's app (**"WE PRINT"**) advertises Excel printing and barcodes. I couldn't check its screens, so
-this is the general approach, not exact taps:
-
-- **Best case:** import `serials_batch04_S1HCB0381-S1HCB0400.xlsx`, add a **barcode element set to Code 128** that reads
-  the `Serial` column plus a text element for the serial, set the label to 50 × 30 mm, and print 20 rows at a time.
-- **Fallback (what you do today):** upload the PNGs from `png/` one at a time. It works, but it's slow
-  for many labels. Use Method A.
-
-If the app makes its own barcode, check that it's **Code 128** (not QR or EAN) and scan one before the rest.
-
----
+Open the PDF in Edge and choose **LD0801 Label Printer**. Under *More settings*: paper size 50 × 30 mm,
+Scale **Actual size**, Margins **None**, Colour **Black and white**. Check that the preview shows one 5:3 label
+per page; a long, thin strip means the driver's paper size is wrong.
 
 ## ⚠ Durability — read this before sticking labels on buffaloes
 

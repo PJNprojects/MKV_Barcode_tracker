@@ -5,19 +5,21 @@ Static website (no build step, no server code) with two jobs:
 1. **Scan → device page.** Workers open the site on their phone, tap **Scan barcode**, point the camera at the
    Code 128 label on a CattleBand, and the device page opens: module details, the buffalo it's fitted to, and a
    *Live health* panel that's ready for sensor data.
-2. **Label printing tool** (`/labels/`). It generates print-ready labels for any serial range, at the printer's
-   native 203 dpi.
+2. **Label printing tool** (`/labels/`, the small printer icon at the top right of the home page). Pick a
+   template, type a serial range, check the preview, download a PDF, and print it from the printer's phone
+   app. Templates are fully customisable (title, logo, barcode and/or QR, serial text, margins).
 
 ```
 HerdIQ-CattleBand/
 ├── netlify.toml            Netlify config (publishes the site/ folder)
 ├── PRINTING_GUIDE.md       How to print the labels on the SEZNIK Josh
-├── print-files/            Test batch 4 (S1HCB0381–S1HCB0400): PDF, PNGs, Excel (verified)
+├── print-files/            Test PDFs for S1HCB0381–S1HCB0400 + alignment test (verified)
 └── site/                   ← this folder IS the website
     ├── index.html          Home: scan, type a serial, searchable device list
     ├── device.html         Device page: device.html?id=S1HCB0321
-    ├── labels/index.html   Label printing tool
+    ├── labels/index.html   Label printing tool (templates, preview, PDF download)
     ├── data/devices.json   The registry (edit this to change animal details)
+    ├── data/label-templates.json  Shared label templates (appear on every device)
     ├── manifest.webmanifest  "Add to Home screen" → opens straight into the scanner
     ├── _headers            Netlify security/caching headers
     └── assets/
@@ -26,8 +28,11 @@ HerdIQ-CattleBand/
         ├── js/data.js      Data layer (static JSON today, API tomorrow)
         ├── js/scanner.js   Camera scanner (native BarcodeDetector → ZXing fallback)
         ├── js/home.js, device.js, ui.js
-        ├── js/labels/      Code 128 encoder, 1-bit renderer, PDF/PNG/ZIP writers, tool UI
-        └── vendor/zxing/   ZXing 0.21.3 (Apache-2.0), served locally — no CDN dependency
+        ├── js/labels/      Label tool: templates.js (template model + built-ins), layout.js (one layout →
+        │                   preview / 203-dpi bitmap / vector PDF), code128.js, fonts.js (PDF font metrics),
+        │                   export.js (PDF/PNG/ZIP writers), app.js (UI)
+        └── vendor/         ZXing 0.21.3 (Apache-2.0, scanning) and qrcode-generator 1.4.4 (MIT, QR printing),
+                            served locally — no CDN dependency
 ```
 
 ## Serial format
@@ -43,6 +48,10 @@ Workers can type `321` and the site expands it to `S1HCB0321` (prefix set in `co
 3. *Site configuration → Change site name* → e.g. `herdiq-devices` → `https://herdiq-devices.netlify.app`.
 4. Every push to `main` redeploys within about 30 seconds.
 
+**No GitHub access yet?** Go to <https://app.netlify.com/drop> and drag the **`site`** folder onto the page.
+That publishes the same website immediately. Later, connect the GitHub repo to that same Netlify site so
+pushes deploy automatically.
+
 **HTTPS is required for the camera.** Netlify provides it automatically. Opening `index.html` straight from
 disk will **not** work: the camera and the data loading both need a web server.
 
@@ -57,7 +66,7 @@ show up immediately.
 - `status`: `testing` | `in-stock` | `deployed` | `maintenance` | `retired`
 - `animal`: set to `null` while the band isn't on an animal
 - Remove `"environment": "test"` (or set it to `"production"`) to hide the *Test data* banner
-- For a new batch of bands, use the label tool. **Website registry (devices.json)** exports matching entries
+- For a new batch of bands, use the label tool. *More downloads → Website entries* exports matching entries
   you can append.
 
 ## Moving to the official website later

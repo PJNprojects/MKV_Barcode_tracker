@@ -1,8 +1,9 @@
 /*
  * File exporters for the label tool — no third-party libraries.
- *   PDF  : one label per page, page size = label size. Vector (sharp text + bars
- *          snapped to the 203-dpi dot grid) or 1-bit bitmap. /PrintScaling /None
- *          so PDF viewers default to "Actual size".
+ *   PDF  : one label per page, page size = label size (50 × 30 mm). Vector pages:
+ *          standard-14 fonts (no embedding needed), barcode/QR as rectangles on the
+ *          203-dpi dot grid, logos as 1-bit image masks. /PrintScaling /None so
+ *          PDF viewers default to "Actual size".
  *   PNG  : 1-bit black/white, with a pHYs chunk declaring 203.2 dpi.
  *   ZIP  : "stored" (uncompressed) archive — PDFs/PNGs are already compressed.
  */
@@ -23,8 +24,8 @@
     return t;
   })();
 
-  function crc32(bytes, seed) {
-    var c = seed === undefined ? 0xffffffff : seed;
+  function crc32(bytes) {
+    var c = 0xffffffff;
     for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 0xff] ^ (c >>> 8);
     return c;
   }
@@ -46,7 +47,7 @@
     return new Uint8Array(await new Response(stream).arrayBuffer());
   }
 
-  /** Packs a 1-byte-per-dot bitmap (1 = black) into PDF DeviceGray 1-bit rows (bit 1 = white). */
+  /** Packs a 1-byte-per-dot bitmap (1 = black) into 1-bit rows where bit 0 = black. */
   function packBits(bitmap) {
     var W = bitmap.width, H = bitmap.height;
     var rowBytes = Math.ceil(W / 8);
@@ -68,65 +69,74 @@
     return 'D:' + d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + 'Z';
   }
 
+  function fmt(n) { return n.toFixed(4).replace(/\.?0+$/, ''); }
+
   // ── PDF ───────────────────────────────────────────────────────────────────
   /**
-   * One label per page. Each page is either
-   *   • a vector page  { content: '<PDF operators>' }  (uses font /F1 = Helvetica-Bold), or
-   *   • a bitmap       { width, height, data }          (1-bit image filling the page).
-   * @param {Array<object>} pages
-   * @param {{widthMm:number, heightMm:number, title?:string}} page
+   * @param {Array<{content:string, fonts:string[], images:Array<{width,height,data}>}>} pages
+   *        (from HerdIQ.LabelLayout.toPdfPage)
+   * @param {{widthMm:number, heightMm:number, title?:string}} size
    * @returns {Promise<Blob>}
    */
-  async function buildPdf(pages, page) {
+  async function buildPdf(pages, size) {
     if (!pages.length) throw new Error('Nothing to export.');
-    var wPt = (page.widthMm * 72) / 25.4;
-    var hPt = (page.heightMm * 72) / 25.4;
-    var fmt = function (n) { return n.toFixed(4).replace(/\.?0+$/, ''); };
-    var mediaBox = '[0 0 ' + fmt(wPt) + ' ' + fmt(hPt) + ']';
+    var mediaBox = '[0 0 ' + fmt((size.widthMm * 72) / 25.4) + ' ' + fmt((size.heightMm * 72) / 25.4) + ']';
 
-    // 1 catalog · 2 page tree · 3 info · 4 font · then 3 objects per page (page, contents, image)
-    var objs = [];
-    var nPages = pages.length;
-    var kids = [];
-    for (var i = 0; i < nPages; i++) kids.push(5 + i * 3 + ' 0 R');
-
-    objs[1] = enc.encode('<< /Type /Catalog /Pages 2 0 R /ViewerPreferences << /PrintScaling /None >> >>');
-    objs[2] = enc.encode('<< /Type /Pages /Count ' + nPages + ' /Kids [' + kids.join(' ') + '] >>');
-    objs[3] = enc.encode('<< /Title ' + pdfString(page.title || 'Labels') + ' /Producer (HerdIQ label tool) /CreationDate ' + pdfString(pdfDate(new Date())) + ' >>');
-    objs[4] = enc.encode('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
-
-    for (i = 0; i < nPages; i++) {
-      var pg = pages[i];
-      var pageNo = 5 + i * 3, contentNo = pageNo + 1, imageNo = pageNo + 2;
-      var isVector = typeof pg.content === 'string';
-      var resources = isVector
-        ? '<< /Font << /F1 4 0 R >> /ProcSet [/PDF /Text] >>'
-        : '<< /XObject << /Im0 ' + imageNo + ' 0 R >> >>';
-      objs[pageNo] = enc.encode('<< /Type /Page /Parent 2 0 R /MediaBox ' + mediaBox + ' /Resources ' + resources + ' /Contents ' + contentNo + ' 0 R >>');
-
-      var stream = enc.encode(isVector ? pg.content : 'q ' + fmt(wPt) + ' 0 0 ' + fmt(hPt) + ' 0 0 cm /Im0 Do Q');
-      var packedStream = await deflate(stream);
-      objs[contentNo] = concat([
-        enc.encode('<< /Length ' + (packedStream || stream).length + (packedStream ? ' /Filter /FlateDecode' : '') + ' >>\nstream\n'),
-        packedStream || stream,
+    var objs = [null]; // objs[n] = bytes of object n (1-based)
+    function reserve() { objs.push(null); return objs.length - 1; }
+    function set(n, s) { objs[n] = typeof s === 'string' ? enc.encode(s) : s; }
+    async function stream(dict, bytes) {
+      var packed = await deflate(bytes);
+      var body = packed || bytes;
+      return concat([
+        enc.encode('<< ' + dict + (packed ? ' /Filter /FlateDecode' : '') + ' /Length ' + body.length + ' >>\nstream\n'),
+        body,
         enc.encode('\nendstream')
       ]);
-
-      if (isVector) {
-        objs[imageNo] = enc.encode('null'); // keeps object numbering uniform
-      } else {
-        var raw = packBits(pg);
-        var packed = await deflate(raw);
-        var body = packed || raw;
-        objs[imageNo] = concat([
-          enc.encode('<< /Type /XObject /Subtype /Image /Width ' + pg.width + ' /Height ' + pg.height +
-            ' /ColorSpace /DeviceGray /BitsPerComponent 1 /Interpolate false' + (packed ? ' /Filter /FlateDecode' : '') +
-            ' /Length ' + body.length + ' >>\nstream\n'),
-          body,
-          enc.encode('\nendstream')
-        ]);
-      }
     }
+
+    var catalog = reserve(), tree = reserve(), info = reserve();
+
+    // Fonts: one object per standard font actually used, shared by all pages.
+    var fontObj = {};
+    pages.forEach(function (p) {
+      p.fonts.forEach(function (f) {
+        if (!fontObj[f]) {
+          fontObj[f] = reserve();
+          set(fontObj[f], '<< /Type /Font /Subtype /Type1 /BaseFont /' + f +
+            (f.indexOf('Courier') === 0 || f.indexOf('Helvetica') === 0 || f.indexOf('Times') === 0 ? ' /Encoding /WinAnsiEncoding' : '') + ' >>');
+        }
+      });
+    });
+
+    var kids = [];
+    for (var i = 0; i < pages.length; i++) {
+      var p = pages[i];
+      var pageNo = reserve();
+      var contentNo = reserve();
+      kids.push(pageNo + ' 0 R');
+
+      var xobjects = [];
+      for (var j = 0; j < p.images.length; j++) {
+        var im = p.images[j];
+        var imNo = reserve();
+        // Image mask: only the black dots are painted (in the current fill colour).
+        set(imNo, await stream('/Type /XObject /Subtype /Image /Width ' + im.width + ' /Height ' + im.height +
+          ' /ImageMask true /BitsPerComponent 1 /Decode [0 1] /Interpolate false', packBits(im)));
+        xobjects.push('/Im' + j + ' ' + imNo + ' 0 R');
+      }
+
+      var fontRefs = p.fonts.map(function (f) { return '/' + f + ' ' + fontObj[f] + ' 0 R'; });
+      var res = '<< /ProcSet [/PDF /Text /ImageB]' +
+        (fontRefs.length ? ' /Font << ' + fontRefs.join(' ') + ' >>' : '') +
+        (xobjects.length ? ' /XObject << ' + xobjects.join(' ') + ' >>' : '') + ' >>';
+      set(pageNo, '<< /Type /Page /Parent ' + tree + ' 0 R /MediaBox ' + mediaBox + ' /Resources ' + res + ' /Contents ' + contentNo + ' 0 R >>');
+      set(contentNo, await stream('', enc.encode(p.content)));
+    }
+
+    set(catalog, '<< /Type /Catalog /Pages ' + tree + ' 0 R /ViewerPreferences << /PrintScaling /None >> >>');
+    set(tree, '<< /Type /Pages /Count ' + pages.length + ' /Kids [' + kids.join(' ') + '] >>');
+    set(info, '<< /Title ' + pdfString(size.title || 'Labels') + ' /Producer (HerdIQ label tool) /CreationDate ' + pdfString(pdfDate(new Date())) + ' >>');
 
     var parts = [enc.encode('%PDF-1.4\n'), new Uint8Array([0x25, 0xe2, 0xe3, 0xcf, 0xd3, 0x0a])];
     var offset = parts[0].length + parts[1].length;
@@ -141,7 +151,7 @@
 
     var xref = 'xref\n0 ' + objs.length + '\n0000000000 65535 f \n';
     for (n = 1; n < objs.length; n++) xref += String(offsets[n]).padStart(10, '0') + ' 00000 n \n';
-    xref += 'trailer\n<< /Size ' + objs.length + ' /Root 1 0 R /Info 3 0 R >>\nstartxref\n' + offset + '\n%%EOF\n';
+    xref += 'trailer\n<< /Size ' + objs.length + ' /Root ' + catalog + ' 0 R /Info ' + info + ' 0 R >>\nstartxref\n' + offset + '\n%%EOF\n';
     parts.push(enc.encode(xref));
 
     return new Blob([concat(parts)], { type: 'application/pdf' });
