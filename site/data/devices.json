@@ -1,0 +1,1926 @@
+{
+  "schemaVersion": 1,
+  "environment": "test",
+  "updatedAt": "2026-10-15",
+  "devices": [
+    {
+      "serial": "S1HCB0321",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 1",
+        "tagId": "HIQ-BUF-001",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0322",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 2",
+        "tagId": "HIQ-BUF-002",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0323",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 3",
+        "tagId": "HIQ-BUF-003",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0324",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 4",
+        "tagId": "HIQ-BUF-004",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0325",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 5",
+        "tagId": "HIQ-BUF-005",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0326",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 6",
+        "tagId": "HIQ-BUF-006",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0327",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 7",
+        "tagId": "HIQ-BUF-007",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0328",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 8",
+        "tagId": "HIQ-BUF-008",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0329",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 9",
+        "tagId": "HIQ-BUF-009",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0330",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 10",
+        "tagId": "HIQ-BUF-010",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0331",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 11",
+        "tagId": "HIQ-BUF-011",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0332",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 12",
+        "tagId": "HIQ-BUF-012",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0333",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 13",
+        "tagId": "HIQ-BUF-013",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0334",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 14",
+        "tagId": "HIQ-BUF-014",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0335",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 15",
+        "tagId": "HIQ-BUF-015",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0336",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 16",
+        "tagId": "HIQ-BUF-016",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0337",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 17",
+        "tagId": "HIQ-BUF-017",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0338",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 18",
+        "tagId": "HIQ-BUF-018",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0339",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 19",
+        "tagId": "HIQ-BUF-019",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0340",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 20",
+        "tagId": "HIQ-BUF-020",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0341",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 21",
+        "tagId": "HIQ-BUF-021",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0342",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 22",
+        "tagId": "HIQ-BUF-022",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0343",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 23",
+        "tagId": "HIQ-BUF-023",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0344",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 24",
+        "tagId": "HIQ-BUF-024",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0345",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 25",
+        "tagId": "HIQ-BUF-025",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0346",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 26",
+        "tagId": "HIQ-BUF-026",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0347",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 27",
+        "tagId": "HIQ-BUF-027",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0348",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 28",
+        "tagId": "HIQ-BUF-028",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0349",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 29",
+        "tagId": "HIQ-BUF-029",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0350",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 30",
+        "tagId": "HIQ-BUF-030",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0351",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 31",
+        "tagId": "HIQ-BUF-031",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0352",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 32",
+        "tagId": "HIQ-BUF-032",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0353",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 33",
+        "tagId": "HIQ-BUF-033",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0354",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 34",
+        "tagId": "HIQ-BUF-034",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0355",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 35",
+        "tagId": "HIQ-BUF-035",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0356",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 36",
+        "tagId": "HIQ-BUF-036",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0357",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 37",
+        "tagId": "HIQ-BUF-037",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0358",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 38",
+        "tagId": "HIQ-BUF-038",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0359",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 39",
+        "tagId": "HIQ-BUF-039",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0360",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 40",
+        "tagId": "HIQ-BUF-040",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0361",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 41",
+        "tagId": "HIQ-BUF-041",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0362",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 42",
+        "tagId": "HIQ-BUF-042",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0363",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 43",
+        "tagId": "HIQ-BUF-043",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0364",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 44",
+        "tagId": "HIQ-BUF-044",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0365",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 45",
+        "tagId": "HIQ-BUF-045",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0366",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 46",
+        "tagId": "HIQ-BUF-046",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0367",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 47",
+        "tagId": "HIQ-BUF-047",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0368",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 48",
+        "tagId": "HIQ-BUF-048",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0369",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 49",
+        "tagId": "HIQ-BUF-049",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0370",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 50",
+        "tagId": "HIQ-BUF-050",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0371",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 51",
+        "tagId": "HIQ-BUF-051",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0372",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 52",
+        "tagId": "HIQ-BUF-052",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0373",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 53",
+        "tagId": "HIQ-BUF-053",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0374",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 54",
+        "tagId": "HIQ-BUF-054",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0375",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 55",
+        "tagId": "HIQ-BUF-055",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0376",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 56",
+        "tagId": "HIQ-BUF-056",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0377",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 57",
+        "tagId": "HIQ-BUF-057",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0378",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 58",
+        "tagId": "HIQ-BUF-058",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0379",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 59",
+        "tagId": "HIQ-BUF-059",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0380",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 60",
+        "tagId": "HIQ-BUF-060",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0381",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 61",
+        "tagId": "HIQ-BUF-061",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0382",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 62",
+        "tagId": "HIQ-BUF-062",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0383",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 63",
+        "tagId": "HIQ-BUF-063",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0384",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 64",
+        "tagId": "HIQ-BUF-064",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0385",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 65",
+        "tagId": "HIQ-BUF-065",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0386",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 66",
+        "tagId": "HIQ-BUF-066",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0387",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 67",
+        "tagId": "HIQ-BUF-067",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0388",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 68",
+        "tagId": "HIQ-BUF-068",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0389",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 69",
+        "tagId": "HIQ-BUF-069",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0390",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 70",
+        "tagId": "HIQ-BUF-070",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0391",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 71",
+        "tagId": "HIQ-BUF-071",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0392",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 72",
+        "tagId": "HIQ-BUF-072",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0393",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 73",
+        "tagId": "HIQ-BUF-073",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0394",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 74",
+        "tagId": "HIQ-BUF-074",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0395",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 75",
+        "tagId": "HIQ-BUF-075",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0396",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 76",
+        "tagId": "HIQ-BUF-076",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0397",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 77",
+        "tagId": "HIQ-BUF-077",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0398",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 78",
+        "tagId": "HIQ-BUF-078",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0399",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 79",
+        "tagId": "HIQ-BUF-079",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0400",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 80",
+        "tagId": "HIQ-BUF-080",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0401",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 81",
+        "tagId": "HIQ-BUF-081",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0402",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 82",
+        "tagId": "HIQ-BUF-082",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0403",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 83",
+        "tagId": "HIQ-BUF-083",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0404",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 84",
+        "tagId": "HIQ-BUF-084",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0405",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 85",
+        "tagId": "HIQ-BUF-085",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0406",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 86",
+        "tagId": "HIQ-BUF-086",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0407",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 87",
+        "tagId": "HIQ-BUF-087",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0408",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 88",
+        "tagId": "HIQ-BUF-088",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0409",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 89",
+        "tagId": "HIQ-BUF-089",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0410",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 90",
+        "tagId": "HIQ-BUF-090",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0411",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 91",
+        "tagId": "HIQ-BUF-091",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0412",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 92",
+        "tagId": "HIQ-BUF-092",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0413",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 93",
+        "tagId": "HIQ-BUF-093",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0414",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 94",
+        "tagId": "HIQ-BUF-094",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0415",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 95",
+        "tagId": "HIQ-BUF-095",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0416",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 96",
+        "tagId": "HIQ-BUF-096",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 8,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0417",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 97",
+        "tagId": "HIQ-BUF-097",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 3,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0418",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 98",
+        "tagId": "HIQ-BUF-098",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 4,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0419",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 99",
+        "tagId": "HIQ-BUF-099",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 5,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0420",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 100",
+        "tagId": "HIQ-BUF-100",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 6,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    },
+    {
+      "serial": "S1HCB0421",
+      "product": "CattleBand",
+      "sensorVersion": 1,
+      "manufacturedOn": "2026-10-17",
+      "batch": "2026-10-A",
+      "status": "testing",
+      "firmware": null,
+      "animal": {
+        "name": "Buffalo 101",
+        "tagId": "HIQ-BUF-101",
+        "species": "Buffalo",
+        "breed": "Murrah",
+        "sex": "Female",
+        "ageYears": 7,
+        "farm": "Pilot farm (test)"
+      },
+      "notes": "Placeholder animal details for testing. Replace when the band is fitted."
+    }
+  ]
+}

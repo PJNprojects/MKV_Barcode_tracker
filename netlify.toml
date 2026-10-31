@@ -1,0 +1,4 @@
+# Netlify build settings — the site is plain static files, no build step.
+[build]
+  publish = "site"
+  command = ""

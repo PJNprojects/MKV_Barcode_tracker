@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Device · HerdIQ</title>
+  <meta name="theme-color" content="#1f6b4a">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/img/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/serial.js" defer></script>
+  <script src="assets/js/ui.js" defer></script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/device.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <img src="assets/img/icon.svg" alt="" width="32" height="32">
+      <span class="brand__name">HerdIQ</span>
+      <span class="brand__sub">Device registry</span>
+    </a>
+    <a class="btn btn--small btn--on-brand" href="./#scan">Scan next</a>
+  </header>
+
+  <main class="container" id="content" aria-live="polite">
+    <div class="card skeleton" aria-hidden="true">
+      <div class="skeleton__line skeleton__line--lg"></div>
+      <div class="skeleton__line"></div>
+      <div class="skeleton__line skeleton__line--sm"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a href="./">All devices</a>
+    <span>HerdIQ · Vayam Designers</span>
+  </footer>
+</body>
+</html>

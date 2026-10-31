@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HerdIQ · Label Printing Tool</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#1f6b4a">
+  <link rel="icon" href="../assets/img/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <link rel="stylesheet" href="../assets/css/labels.css">
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/serial.js" defer></script>
+  <script src="../assets/js/labels/code128.js" defer></script>
+  <script src="../assets/js/labels/render.js" defer></script>
+  <script src="../assets/js/labels/export.js" defer></script>
+  <script src="../assets/js/labels/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="../">
+      <img src="../assets/img/icon.svg" alt="" width="32" height="32">
+      <span class="brand__name">HerdIQ</span>
+      <span class="brand__sub">Label printing tool</span>
+    </a>
+  </header>
+
+  <main class="lt">
+    <form class="lt__settings card" id="settings" novalidate>
+      <fieldset>
+        <legend>Serial range</legend>
+        <div class="grid grid--2">
+          <label class="f">Prefix<input class="input input--mono" name="prefix" value="S1HCB" maxlength="20" required></label>
+          <label class="f">Digits<input class="input" name="digits" type="number" min="1" max="8" value="4" required></label>
+          <label class="f">First number<input class="input" name="start" type="number" min="0" value="321" required></label>
+          <label class="f">Last number<input class="input" name="end" type="number" min="0" value="421" required></label>
+        </div>
+        <p class="hint" id="range-summary"></p>
+      </fieldset>
+
+      <fieldset>
+        <legend>Label roll</legend>
+        <div class="grid grid--2">
+          <label class="f">Width (mm)<input class="input" name="widthMm" type="number" min="15" max="60" step="0.5" value="50" required></label>
+          <label class="f">Height (mm)<input class="input" name="heightMm" type="number" min="10" max="100" step="0.5" value="30" required></label>
+        </div>
+        <label class="f">Labels per print batch<input class="input" name="batchSize" type="number" min="1" max="500" value="20" required></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Layout</legend>
+        <label class="check"><input type="checkbox" name="showHeader" checked> Show title above the barcode</label>
+        <label class="f">Title (printed large, centred)<input class="input" name="headerText" value="HerdIQ" maxlength="20"></label>
+        <div class="grid grid--2">
+          <label class="f">Bar width
+            <select class="input" name="moduleDots">
+              <option value="auto" selected>Auto (widest that fits)</option>
+              <option value="1">1 dot · 0.125 mm</option>
+              <option value="2">2 dots · 0.25 mm</option>
+              <option value="3">3 dots · 0.375 mm</option>
+              <option value="4">4 dots · 0.5 mm</option>
+            </select>
+          </label>
+          <label class="f">Barcode height (mm)<input class="input" name="barcodeHeightMm" type="number" min="4" max="80" step="0.5" value="11" placeholder="Auto (fill)"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Printer calibration</legend>
+        <p class="hint">Only change these if the test print is off-centre or upside down.</p>
+        <div class="grid grid--2">
+          <label class="f">Shift right (mm)<input class="input" name="offsetXmm" type="number" min="-10" max="10" step="0.125" value="0"></label>
+          <label class="f">Shift down (mm)<input class="input" name="offsetYmm" type="number" min="-10" max="10" step="0.125" value="0"></label>
+        </div>
+        <label class="check"><input type="checkbox" name="rotate180"> Rotate 180°</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Registry export (devices.json)</legend>
+        <div class="grid grid--2">
+          <label class="f">Manufactured on<input class="input" name="manufacturedOn" type="date" value="2026-10-17"></label>
+          <label class="f">Batch code<input class="input input--mono" name="batchCode" value="2026-10-A" maxlength="30"></label>
+        </div>
+        <div class="grid grid--2">
+          <label class="f">Animal name pattern<input class="input" name="animalPattern" value="Buffalo {n}" maxlength="40"></label>
+          <label class="f">Status
+            <select class="input" name="status">
+              <option value="testing" selected>Testing</option>
+              <option value="in-stock">In stock</option>
+              <option value="deployed">Deployed</option>
+            </select>
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" name="testData" checked> Mark as test data (shows a banner on the website)</label>
+      </fieldset>
+
+      <button type="button" class="btn btn--ghost" id="reset-btn">Reset to defaults</button>
+    </form>
+
+    <section class="lt__output">
+      <div class="card">
+        <div class="lt__head">
+          <h1 class="section-title">Preview</h1>
+          <span class="muted small" id="preview-meta"></span>
+        </div>
+        <div class="lt__preview-wrap">
+          <canvas id="preview" class="lt__preview" aria-label="Preview of the first label"></canvas>
+        </div>
+        <ul class="lt__stats" id="stats"></ul>
+        <div class="lt__warn" id="warnings" role="status" hidden></div>
+        <p class="form-error" id="error" role="alert" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">Download for printing</h2>
+        <div class="lt__downloads">
+          <button type="button" class="btn btn--primary" data-action="zip-batches">All batches · PDFs (.zip)</button>
+          <button type="button" class="btn btn--secondary" data-action="pdf-all">Everything · one PDF</button>
+          <button type="button" class="btn btn--secondary" data-action="png-all">All labels · PNG images (.zip)</button>
+          <button type="button" class="btn btn--secondary" data-action="csv">Serial list (.csv for the app)</button>
+          <button type="button" class="btn btn--secondary" data-action="registry">Website registry (devices.json)</button>
+        </div>
+        <h3 class="lt__sub">Batches</h3>
+        <div class="table-wrap">
+          <table class="lt__table">
+            <thead><tr><th>#</th><th>Serials</th><th>Labels</th><th class="visually-hidden">Downloads</th></tr></thead>
+            <tbody id="batch-rows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">All labels <span class="count" id="all-count"></span></h2>
+        <div class="lt__grid" id="all-labels"></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
