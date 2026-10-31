@@ -27,11 +27,11 @@
     schema: SCHEMA,
     id: '',
     name: '',
-    title: { show: true, text: 'HerdIQ', font: 'sans', bold: true, sizeMm: 6, spacing: 3, align: 'center', dxMm: 0, dyMm: 0 },
-    subtitle: { show: false, text: 'Cattle Node', font: 'sans', bold: false, sizeMm: 3, spacing: 3, align: 'center', gapMm: 0.75, dxMm: 0, dyMm: 0 },
+    title: { show: true, text: 'HerdIQ', font: 'sans', bold: true, sizeMm: 6, heightPct: 100, spacing: 3, align: 'center', dxMm: 0, dyMm: 0 },
+    subtitle: { show: false, text: 'Cattle Node', font: 'sans', bold: false, sizeMm: 3, heightPct: 100, spacing: 3, align: 'center', gapMm: 0.75, dxMm: 0, dyMm: 0 },
     logo: { show: false, image: '', heightMm: 6, position: 'left', gapMm: 1.5, threshold: 50 },
     code: { type: 'barcode', barcodeHeightMm: 11, barWidth: 'auto', qrContent: 'serial', qrSizeMm: 11, qrPosition: 'left', gapMm: 3, dxMm: 0, dyMm: 0 },
-    serial: { show: true, font: 'sans', bold: true, sizeMm: 4.25, spacing: 6, align: 'center', dxMm: 0, dyMm: 0 },
+    serial: { show: true, font: 'sans', bold: true, sizeMm: 4.25, heightPct: 100, spacing: 6, align: 'center', dxMm: 0, dyMm: 0 },
     layout: { edgeMm: 1.5, sideMm: 2.5 }
   });
 
@@ -58,6 +58,9 @@
     'code.dxMm': { min: -25, max: 25 },
     'code.dyMm': { min: -15, max: 15 },
     'subtitle.text': { max: 30 },
+    'title.heightPct': { min: 30, max: 300 },
+    'subtitle.heightPct': { min: 30, max: 300 },
+    'serial.heightPct': { min: 30, max: 300 },
     'subtitle.font': { validate: function (v) { return v === 'same' || HerdIQ.LabelFonts.isValidKey(v); } },
     'subtitle.sizeMm': { min: 1.5, max: 10 },
     'subtitle.spacing': { min: 0, max: 40 },

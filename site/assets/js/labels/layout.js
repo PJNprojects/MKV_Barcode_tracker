@@ -108,7 +108,8 @@
       }
       return {
         kind: 'outline', str: str, font: font, shaped: shaped, size: size, stroke: stroke,
-        width: shaped.width + stroke, baselineRatio: 0.5 + Fonts.capHeight(font) / 2
+        width: shaped.width + stroke, baselineRatio: 0.5 + Fonts.capHeight(font) / 2,
+        vs: vscale(cfg), vsize: size * vscale(cfg)
       };
     }
 
@@ -119,8 +120,11 @@
       width = maxWidth;
       warnings.push(what + ' was too wide and has been shrunk to ' + (size / dpm).toFixed(1) + ' mm to fit.');
     }
-    return { kind: 'standard', str: str, pdfFont: pdfFont, family: fontKey, bold: cfg.bold, size: size, spacing: size * ratio, width: width, baselineRatio: BASELINE };
+    return { kind: 'standard', str: str, pdfFont: pdfFont, family: fontKey, bold: cfg.bold, size: size, spacing: size * ratio, width: width, baselineRatio: BASELINE, vs: vscale(cfg), vsize: size * vscale(cfg) };
   }
+
+  /** Vertical stretch: 1 = normal, 0.6 = squashed (shorter), 1.5 = taller. Width is unchanged. */
+  function vscale(cfg) { return (cfg.heightPct || 100) / 100; }
 
   function alignX(align, width, side, W) {
     if (align === 'left') return side;
@@ -168,7 +172,7 @@
       var text = titleText ? makeText(titleText, tpl.title, tpl.title.font, contentW - (logo ? logo.w + lgap : 0), dpm, warnings, 'Title') : null;
       rows.push({
         kind: 'title',
-        h: Math.max(text ? Math.round(text.size) : 0, logo ? logo.h : 0),
+        h: Math.max(text ? Math.round(text.vsize) : 0, logo ? logo.h : 0),
         logo: logo,
         text: text,
         gap: lgap
@@ -182,7 +186,7 @@
       if (badSub) throw new LayoutError('Subtitle contains characters the printer fonts cannot show: ' + badSub + '. Use English letters, numbers and basic symbols.');
       var subFont = tpl.subtitle.font === 'same' ? tpl.title.font : tpl.subtitle.font;
       var subt = makeText(subText, tpl.subtitle, subFont, contentW, dpm, warnings, 'Subtitle');
-      rows.push({ kind: 'subtitle', h: Math.round(subt.size), text: subt, fixedGapAbove: rows.length ? mm(tpl.subtitle.gapMm, dpm) : null });
+      rows.push({ kind: 'subtitle', h: Math.round(subt.vsize), text: subt, fixedGapAbove: rows.length ? mm(tpl.subtitle.gapMm, dpm) : null });
     }
 
     // ── Code row ──
@@ -267,7 +271,7 @@
     if (tpl.serial.show) {
       var serialFont = tpl.serial.font === 'same' ? tpl.title.font : tpl.serial.font;
       var stext = makeText(serial, tpl.serial, serialFont, contentW, dpm, warnings, 'Serial number');
-      rows.push({ kind: 'serial', h: Math.round(stext.size), text: stext });
+      rows.push({ kind: 'serial', h: Math.round(stext.vsize), text: stext });
     }
 
     // ── Vertical distribution ──
@@ -304,7 +308,7 @@
             x += r.logo.w + r.gap;
           } else if (p === 'text' && r.text) {
             var tt = r.text;
-            items.push(textItem(tt, x, r.top + dy + (r.h - tt.size) / 2 + tt.size * tt.baselineRatio));
+            items.push(textItem(tt, x, r.top + dy + (r.h - tt.vsize) / 2 + tt.vsize * tt.baselineRatio));
             x += tt.width + r.gap;
           }
         });
@@ -345,11 +349,11 @@
       } else if (r.kind === 'subtitle') {
         var su = r.text;
         var sux = alignX(tpl.subtitle.align, su.width, side, W) + mm(tpl.subtitle.dxMm, dpm);
-        items.push(textItem(su, sux, r.top + mm(tpl.subtitle.dyMm, dpm) + su.size * su.baselineRatio));
+        items.push(textItem(su, sux, r.top + mm(tpl.subtitle.dyMm, dpm) + su.vsize * su.baselineRatio));
       } else if (r.kind === 'serial') {
         var st = r.text;
         var sx = alignX(tpl.serial.align, st.width, side, W) + mm(tpl.serial.dxMm, dpm);
-        items.push(textItem(st, sx, r.top + mm(tpl.serial.dyMm, dpm) + st.size * st.baselineRatio));
+        items.push(textItem(st, sx, r.top + mm(tpl.serial.dyMm, dpm) + st.vsize * st.baselineRatio));
       }
     });
 
@@ -370,15 +374,25 @@
       var off = t.stroke / 2;
       t.shaped.glyphs.forEach(function (g, i) {
         var p = g.getPath(x + off + t.shaped.pos[i], baseline, t.size);
-        for (var j = 0; j < p.commands.length; j++) cmds.push(p.commands[j]);
+        for (var j = 0; j < p.commands.length; j++) {
+          var c = p.commands[j];
+          if (t.vs !== 1) {
+            // stretch/squash vertically around the baseline
+            c = Object.assign({}, c);
+            if (c.y != null) c.y = baseline + (c.y - baseline) * t.vs;
+            if (c.y1 != null) c.y1 = baseline + (c.y1 - baseline) * t.vs;
+            if (c.y2 != null) c.y2 = baseline + (c.y2 - baseline) * t.vs;
+          }
+          cmds.push(c);
+        }
       });
       return { type: 'path', cmds: cmds, stroke: t.stroke, x: x, width: t.width, baseline: baseline, size: t.size };
     }
-    return { type: 'text', str: t.str, pdfFont: t.pdfFont, family: t.family, bold: t.bold, size: t.size, spacing: t.spacing, width: t.width, x: x, baseline: baseline };
+    return { type: 'text', str: t.str, pdfFont: t.pdfFont, family: t.family, bold: t.bold, size: t.size, spacing: t.spacing, width: t.width, x: x, baseline: baseline, vs: t.vs || 1 };
   }
 
   function bounds(it) {
-    if (it.type === 'text') return { x0: it.x, y0: it.baseline - it.size * 0.75, x1: it.x + it.width, y1: it.baseline + it.size * 0.21 };
+    if (it.type === 'text') return { x0: it.x, y0: it.baseline - it.size * it.vs * 0.75, x1: it.x + it.width, y1: it.baseline + it.size * it.vs * 0.21 };
     if (it.type === 'path') {
       var b = { x0: Infinity, y0: Infinity, x1: -Infinity, y1: -Infinity };
       it.cmds.forEach(function (c) {
@@ -439,7 +453,15 @@
         var x = it.x;
         for (var i = 0; i < it.str.length; i++) {
           var ch = it.str[i];
-          g.fillText(ch, x * scale, it.baseline * scale);
+          if (it.vs !== 1) {
+            g.save();
+            g.translate(x * scale, it.baseline * scale);
+            g.scale(1, it.vs);
+            g.fillText(ch, 0, 0);
+            g.restore();
+          } else {
+            g.fillText(ch, x * scale, it.baseline * scale);
+          }
           x += (Fonts.advance(it.pdfFont, ch) / 1000) * it.size + it.spacing;
         }
       } else if (it.type === 'bits') {
@@ -558,7 +580,7 @@
     label.items.forEach(function (it) {
       if (it.type === 'text') {
         if (fonts.indexOf(it.pdfFont) === -1) fonts.push(it.pdfFont);
-        out.push('BT /' + it.pdfFont + ' ' + num(it.size * k) + ' Tf ' + num(it.spacing * k) + ' Tc 1 0 0 1 ' +
+        out.push('BT /' + it.pdfFont + ' ' + num(it.size * k) + ' Tf ' + num(it.spacing * k) + ' Tc 1 0 0 ' + num(it.vs) + ' ' +
           num(it.x * k) + ' ' + num(Hpt - it.baseline * k) + ' Tm ' + pdfStr(it.str) + ' Tj ET');
       } else if (it.type === 'path') {
         // Graphics-state operators must come before the path is built, never inside it.
@@ -601,7 +623,7 @@
     var size = 2.4 * dpm;
     var str = 'ALIGNMENT TEST';
     var wdt = Fonts.measure(font, str, size, 0);
-    items.push({ type: 'text', str: str, pdfFont: font, family: 'sans', bold: true, size: size, spacing: 0, width: wdt, x: (W - wdt) / 2, baseline: H - inset - 2 * dpm });
+    items.push({ type: 'text', str: str, pdfFont: font, family: 'sans', bold: true, size: size, spacing: 0, width: wdt, x: (W - wdt) / 2, baseline: H - inset - 2 * dpm, vs: 1 });
     return { W: W, H: H, dpm: dpm, items: items, warnings: [], info: {} };
   }
 
