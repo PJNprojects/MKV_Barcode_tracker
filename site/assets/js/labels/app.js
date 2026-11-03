@@ -85,7 +85,7 @@
   }
 
   function selectTemplate(id, opts) {
-    var t = findTemplate(id) || T.BUILT_IN[0];
+    var t = findTemplate(id) || findTemplate(T.DEFAULT_TEMPLATE_ID) || T.BUILT_IN[0];
     state.current = t;
     state.working = T.normalize(T.clone(t));
     state.working.id = t.id;
@@ -623,7 +623,7 @@
     state.custom = state.custom.filter(function (t) { return t.id !== id; });
     if (!persistCustom()) { state.custom = before; return; }
     renderTemplateOptions();
-    selectTemplate('t1');
+    selectTemplate(T.DEFAULT_TEMPLATE_ID);
   });
 
   els.exportBtn.addEventListener('click', function () {

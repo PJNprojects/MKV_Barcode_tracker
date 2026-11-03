@@ -139,6 +139,17 @@
       subtitle: { show: true, text: 'Cattle Node', sizeMm: 3, gapMm: 0.75 },
       code: { barcodeHeightMm: 10 },
       serial: { sizeMm: 4 }
+    }),
+    // Default template (designed in the tool and exported by the team, Nov 2026).
+    normalize({
+      id: 't4',
+      name: 'Template 4 · HerdIQ Cattle Node (default)',
+      title: { show: true, text: 'HerdIQ', font: 'g:roboto-mono', bold: true, sizeMm: 5.5, heightPct: 100, spacing: 7, align: 'center', dxMm: 0, dyMm: 0 },
+      subtitle: { show: true, text: 'Cattle Node', font: 'sans', bold: false, sizeMm: 3.5, heightPct: 105, spacing: 9, align: 'center', gapMm: 0, dxMm: 0, dyMm: 0 },
+      logo: { show: false },
+      code: { type: 'barcode', barcodeHeightMm: 10, barWidth: 'auto', qrContent: 'serial', qrSizeMm: 11, qrPosition: 'left', gapMm: 3, dxMm: 0, dyMm: 0 },
+      serial: { show: true, font: 'g:roboto-mono', bold: false, sizeMm: 4.5, heightPct: 70, spacing: 21, align: 'center', dxMm: 0, dyMm: -2.25 },
+      layout: { edgeMm: 1.5, sideMm: 2.5 }
     })
   ].map(function (t) { t.builtIn = true; return Object.freeze(t); });
 
@@ -231,8 +242,10 @@
   }
 
   // ── Preferences (last template, last range, printer alignment) ───────────
+  var DEFAULT_TEMPLATE_ID = 't4';
+
   var DEFAULT_PREFS = Object.freeze({
-    templateId: 't1',
+    templateId: 't4', // default template for new devices
     from: 'S1HCB0381',
     to: 'S1HCB0386',
     // First phone-app test print came out left of centre → default nudge to the right.
@@ -263,6 +276,7 @@
     RULES: RULES,
     BUILT_IN: BUILT_IN,
     DEFAULT_PREFS: DEFAULT_PREFS,
+    DEFAULT_TEMPLATE_ID: DEFAULT_TEMPLATE_ID,
     normalize: normalize,
     clone: clone,
     getPath: getPath,
